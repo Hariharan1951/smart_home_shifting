@@ -1,0 +1,362 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+MoveEase | Home
+{% endblock %}
+
+{% block body %}
+
+{% include 'customer/customer_navbar.html' %}
+<section class="slider-caurosel">
+    {% include 'slider.html' %}
+</section>
+
+<section class="calculator">
+    <div class="container" style="text-align: center;">
+        <div class="heading"
+            style="border:2px solid black; margin:30px 400px 30px 400px; box-shadow: 7px 7px 3px; border-radius:6px ">
+            <h3><em>Instant Quote Calculator</em></h3>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group row" style="margin-bottom:2%;">
+                <label for="name" class="col-sm-2 col-form-label" style="padding-left:60px"><strong><em>Your
+                            Name</em></strong></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
+                </div>
+            </div>
+            <div class="form-group row" style="margin-bottom:2%;">
+                <label for="ph_no" class="col-sm-2 col-form-label" style="padding-left:60px"><strong><em>Phone
+                            Number</em></strong></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="ph_no" name="ph_no" placeholder="Mobile Number"
+                        required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <p id="ph_no_error" style="color:red;"></p>
+            </div>
+
+            <div class="form-group row" style="margin-bottom:1%;">
+                <label for="from_address" class="col-sm-2 col-form-label" style="padding-left:60px"><strong><em>From
+                            Address</em></strong></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="from_address" name="from_address"
+                        placeholder="From Address" required>
+                </div>
+            </div>
+
+
+            <div class="form-group row" style="margin-bottom:2%;">
+                <div class="col-auto my-1" style="margin-left:20%">
+                    <label for="from_bhk" class="mr-sm-2"><strong><em>BHK?</em></strong></label>
+                    <select class="form-select" id="from_bhk" name="from_bhk" required>
+                        <option value="500">1 BHK</option>
+                        <option value="800">2 BHK</option>
+                        <option value="1000">3 BHK</option>
+                        <option value="1500">4 BHK & Above</option>
+                    </select>
+                </div>
+
+                <div class="col-auto my-1" style="margin-left:20%">
+                    <label for="from_floor" class="mr-sm-2"><strong><em>Floor</em></strong></label>
+                    <select id="from_floor" name="from_floor" class="form-select" required>
+                        <option value="0" selected>Ground Floor</option>
+                        <option value="200">1</option>
+                        <option value="400">2</option>
+                        <option value="500">3</option>
+                        <option value="600">4</option>
+                        <option value="700">5</option>
+                        <option value="800">6</option>
+                        <option value="1000">7 & Above</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row" style="margin-bottom:2%;">
+                <label for="to_address" class="col-sm-2 col-form-label" style="padding-left:60px"
+                    style="padding-left:6%"><strong><em>To Address</em></strong></label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="to_address" name="to_address" placeholder="To Address"
+                        required>
+                </div>
+            </div>
+
+            <div class="form-group row" style="margin-bottom:2%;">
+                <div class="col-auto my-1" style="margin-left:20%">
+                    <label for="to_bhk" class="mr-sm-2"><strong><em>BHK?</em></strong></label>
+                    <select class="form-select" id="to_bhk" name="to_bhk" required>
+                        <option value="500">1 BHK</option>
+                        <option value="800">2 BHK</option>
+                        <option value="1000">3 BHK</option>
+                        <option value="1500">4 BHK & Above</option>
+                    </select>
+                </div>
+
+                <div class="col-auto my-1" style="margin-left:20%">
+                    <label for="to_floor" class="mr-sm-2"><strong><em>Floor</em></strong></label>
+                    <select id="to_floor" name="to_floor" class="form-select" required>
+                        <option value="0" selected>Ground Floor</option>
+                        <option value="200">1</option>
+                        <option value="400">2</option>
+                        <option value="500">3</option>
+                        <option value="600">4</option>
+                        <option value="700">5</option>
+                        <option value="800">6</option>
+                        <option value="1000">7 & Above</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <p id="address_error" style="color:red;"></p>
+            </div>
+
+            <div class="form-group row" style="margin-bottom:2%;">
+                <label for="date" class="col-sm-2 col-form-label" style="padding-left:60px"><strong><em>Shifting
+                            Date</em></strong></label>
+                <div class="col-sm-10">
+                    <input type="date" class="form-control" id="date" name="date" placeholder="To Address" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <p id="date_error" style="color:red;"></p>
+            </div>
+
+            <div class="form-group row" style="margin:3% 30% 3% 40%">
+                <div class="col-sm-10">
+                    <button type="submit" id="proceed_button" class="btn btn-primary">Proceed</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+<section class="company-info-section" style="background: linear-gradient(to right, #5c258d, #4389a2);color:white;text-align: left;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <img src="{% static 'images/background/india_map.png' %}" style="margin-left:-40%;padding-left:0px;" alt="No image">
+            </div>
+            <div class="col-md-9" style="font-family: 'Titillium Web',sans-serif;padding-top:20px">
+                <h3><i class="fa fa-map-marker" style="color:black" aria-hidden="true"></i> MoveEase in India</h3>
+                <p>Situated in India, India is one of the major business centers in the country. It is famous for the manufacturing of hardware parts, IT, and the textile industry. Many IT engineers, technicians, and students migrate to India for employment and education opportunities. Therefore, the demand for efficient packers and movers in India has increased significantly over the past few years.</p>
+
+<p>MoveEase can be a smart choice if you want packers and movers services in India.</p>
+<p>One of India’s leading logistic platforms, MoveEase offers reliable customer support, affordable prices, and a vast fleet of trucks that significantly cater to your relocation needs. We always try to provide you with dependable movers in India.</p>
+
+<p>If you have been looking for affordable packers and movers nearby in India, MoveEase can be a great solution to fulfill your logistic needs.</p>
+
+<p>With MoveEase, you can put your search to end for ‘packers and movers in India near me’ and enjoy our packers and movers services in India wisely.</p>
+<p>Next time when you look for the most reliable Packers and Movers in India, make research your priority. Check for quotation breakups. With MoveEase packers and movers you can select the number and type of goods you want to move and receive a quotation within 5 minutes. Doesn't this sound like the easiest way to relocate?</p>
+<p>Book MoveEase Packers and Movers for moving in and outside India with zero stress. House shifting problems? Wave them a goodbye!</p>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<section>
+    <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel" style="width:100%">
+        <div class="carousel-inner" style="background: linear-gradient(to right, #a1ffce, #faffd1);">
+            <h3 style="text-shadow:5px 5px 8px black;color:navy;font-family:cursive;text-align:center">Customer's Review
+            </h3>
+            {% if customer_reviews %}
+
+            {% for i in customer_reviews %}
+            {% if forloop.counter == 1 %}
+            <div class="carousel-item active" data-bs-interval="2500" style="margin-top:10px;text-align: center;">
+                <p style="font-size:medium;width:800px;height:80px;font-family:cursive;margin-left: 280px;"><sup><i
+                            class="fa fa-quote-left" aria-hidden="true"></i></sup> {{i.customer_review}} <sup><i
+                            class="fa fa-quote-right" aria-hidden="true"></i></sup></p>
+                {% if i.customer_rating == 3 %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </h6>
+                {% elif i.customer_rating == 3.5 %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star-half-o" aria-hidden="true"></i>
+                </h6>
+                {% elif i.customer_rating == 4 %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </h6>
+                {% elif i.customer_rating == 4.5 %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star-half-o" aria-hidden="true"></i>
+                </h6>
+                {% else %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </h6>
+                {% endif %}
+                <p style="font-family:cursive;font-style:italic"><strong>{{i.customer_name}}</strong></p>
+            </div>
+            {% else %}
+            <div class="carousel-item" data-bs-interval="2500" style="margin-top:10px;text-align:center;">
+                <p style="font-size:medium;width:800px;height:80px;font-family:cursive;margin-left: 280px;"><sup><i
+                            class="fa fa-quote-left" aria-hidden="true"></i></sup> {{i.customer_review}} <sup><i
+                            class="fa fa-quote-right" aria-hidden="true"></i></sup></p>
+                {% if i.customer_rating == 3 %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </h6>
+                {% elif i.customer_rating == 3.5 %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star-half-o" aria-hidden="true"></i>
+                </h6>
+                {% elif i.customer_rating == 4 %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </h6>
+                {% elif i.customer_rating == 4.5 %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star-half-o" aria-hidden="true"></i>
+                </h6>
+                {% else %}
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </h6>
+                {% endif %}
+                <p style="font-family:cursive;font-style:italic"><strong>{{i.customer_name}}</strong></p>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% else %}
+            <div class="carousel-item active" data-bs-interval="2500" style="margin-top:10px;text-align: center;">
+                <p style="font-size:medium;width:800px;height:80px;font-family:cursive;margin-left: 280px;"><i
+                        class="fa fa-quote-left" aria-hidden="true"></i> Be the first customer to review.<br> Start Your
+                    shifting today. <i class="fa fa-quote-right" aria-hidden="true"></i></p>
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </h6>
+                <p style="font-family:cursive;font-style:italic"><strong>Team Moveease</strong></p>
+            </div>
+            <div class="carousel-item" data-bs-interval="2500" style="margin-top:10px">
+                <p style="font-size:medium;width:800px;height:80px;font-family:cursive;"><i class="fa fa-quote-left"
+                        aria-hidden="true"></i> Be the first customer to review.<br> Start Your shifting today. <i
+                        class="fa fa-quote-right" aria-hidden="true"></i></p>
+                <h6><i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </h6>
+                <p style="font-family:cursive;font-style:italic"><strong>Team Moveease</strong></p>
+            </div>
+            {% endif %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
+
+<style>
+    li {
+        list-style-type: None;
+    }
+
+    .messages {
+        color: red;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $("#proceed_button").click(function (e) {
+            let ph_no = $("#ph_no").val();
+            let add1 = $("#from_address").val();
+            let add2 = $("#to_address").val();
+
+            let givenDate = new Date($("#date").val()); // Type Casting from string to date format
+            let currentDate = new Date(); // To get the current date and time
+
+            let givenTime1 = new Date(givenDate.getTime()); // To get there time in miliseconds, comparison with 1 jan 1970  
+            let currentTime2 = new Date(currentDate.getTime()); // To get there time in miliseconds, comparison with 1 jan 1970 
+
+            givenTime1.setUTCHours(0, 0, 0, 0); // Setting the time to 00:00:00 hours 
+            currentTime2.setUTCHours(0, 0, 0, 0); // Setting the time to 00:00:00 hours 
+
+            // Date Validation
+            if (givenTime1.getTime() >= currentTime2.getTime()) {
+                $("#date_error").hide()
+                console.log("Given Time bigger")
+            } else {
+                $("#date_error").html("Invalid Date")
+                $("#date_error").show()
+                console.log("Current Time bigger")
+                e.preventDefault()
+            };
+
+            // Phone number validation
+            let ph_re = /^[6789][0-9]{9}$/; //regex pattern
+            let ph_res = ph_re.test(ph_no);  //regex method
+
+            if (ph_res) {
+                $("#ph_no_error").hide()
+            } else {
+
+                $("#ph_no_error").html("Invalid Phone Number")
+                $("#ph_no_error").show()
+                e.preventDefault()
+            };
+
+            // Address validation
+            if (add1.toUpperCase() !== add2.toUpperCase()) {
+                $("#address_error").hide()
+            } else {
+
+                $("#address_error").html("From and To address are same")
+                $("#address_error").show()
+                e.preventDefault()
+            };
+        })
+    })
+
+</script>
+
+{% endblock %}
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}

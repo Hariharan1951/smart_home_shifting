@@ -1,0 +1,247 @@
+{% extends 'base.html'%}
+{% block title %}
+MoveEase | Admin Home
+{% endblock %}
+{% block body %}
+{% include 'MoveEaseAdmin/admin_navbar.html' %}
+<section class="new-orders">
+    <h4
+        style="border:1px solid green; border-radius:10px;width:300px;margin-top:20px;margin-bottom:0px;margin-left:525px;text-align:center">
+        <em>Orders Received</em></h4>
+    <div class="container"
+        style="border: 1px solid green;border-radius:10px; box-shadow: 5px 10px 25px lightgreen; margin-top:0px;margin-bottom:50px;">
+        {% if order_received %}
+        <table class="table table-striped" style="text-align:center;font-size:small">
+            <thead>
+                <th>Order Id</th>
+                <th>Customer Name</th>
+                <th>Phone Number</th>
+                <th>From Address</th>
+                <th>To Address</th>
+                <th>Shifting Date</th>
+                <th>Pickup Time</th>
+                <th>Allotment</th>
+                <th>Status</th>
+                <th>Action</th>
+            </thead>
+
+            <tbody>
+                {% for i in order_received %}
+                <tr class="{{i.id}}">
+                    <td>{{i.id}}</td>
+                    <td>{{i.customer_name}}</td>
+                    <td>{{i.ph_no}}</td>
+                    <td>{{i.fromAddress}}</td>
+                    <td>{{i.toAddress}}</td>
+                    <td>{{i.shifting_date}}</td>
+                    <td>{{i.pickup_time}}</td>
+                    {% if i.id in vehicle_for_customer %}
+                    {% for key, values in vehicle_for_customer.items %}
+                    {% if key == i.id %}
+                    <td>
+                        <select id={{i.id}} class="form-select">
+                            {% for dp_id,name in values %}
+                            <option value={{dp_id}}>{{name}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    <td>No Partner Found</td>
+                    {% endif %}
+                    <td>{{i.status}}</td>
+                    <td>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-success allot-button" data-o-id={{i.id}}><i class="fa fa-check"
+                                        aria-hidden="true"></i></button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-danger delete-button" data-o-id={{i.id}}
+                                    data-acc-id={{i.account_id}} data-name="{{i.customer_name}}"
+                                    data-order-date="{{i.order_placed_date}}" data-unique-id="{{i.unique_order_id}}"
+                                    data-fine={{i.booking_amount}} data-total="{{i.total_amount}}"
+                                    data-status="{{i.status}}" data-dp="{{i.alloted_to}}"><i class="fa fa-trash"
+                                        aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="mb-3">
+            <p id="request-msg"
+                style="color:red;border-radius:100px 100px 100px 100px;width:25%;background-color:rgb(182, 253, 182);margin-left:415px;text-align: center;">
+                Request sent successfully!</p>
+        </div>
+
+        <div class="mb-3">
+            <p id="request-error"
+                style="color:darkgreen;border-radius:100px 100px 100px 100px;width:35%;background-color:rgb(247, 167, 167);margin-left:350px;text-align: center;">
+                No matching delivery partner found. Please wait...</p>
+        </div>
+
+
+        <div class="mb-3">
+            <p id="delete-msg"
+                style="color:darkgreen;border-radius:100px 100px 100px 100px;width:20%;background-color:rgb(247, 167, 167);margin-left:445px;text-align: center;">
+                Order rejected!!</p>
+        </div>
+
+
+        {% else %}
+        <h4 style="text-align: center;">No Order Received</h4>
+        {% endif %}
+    </div>
+
+</section>
+
+
+
+
+<section class="order-transit">
+    <h4
+        style="border:1px solid red; border-radius:10px;width:300px;margin-bottom:0px;;margin-left:525px;text-align:center">
+        <em>Orders in transit</em></h4>
+    <div class="container"
+        style="border: 1px solid red;border-radius:10px; box-shadow: 5px 10px 25px rgb(224, 92, 92); margin-top:0px;margin-bottom:50px;">
+
+        {% if order_transit %}
+        <table class="table table-striped" style="text-align:center">
+            <thead>
+                <th>S.No</th>
+                <th>Order Id</th>
+                <th>Customer Name</th>
+                <th>Phone Number</th>
+                <th>From Address</th>
+                <th>To Address</th>
+                <th>Delivery Partner</th>
+                <th>Status</th>
+            </thead>
+
+            <tbody>
+                {% for i in order_transit %}
+                <tr class="{{i.id}}">
+                    <td>{{forloop.counter}}</td>
+                    <td>{{i.id}}</td>
+                    <td>{{i.customer_name}}</td>
+                    <td>{{i.ph_no}}</td>
+                    <td>{{i.fromAddress}}</td>
+                    <td>{{i.toAddress}}</td>
+                    <td>
+                        {% for key, name in delivery_agent_name.items %}
+                        {% if key == i.id %}
+                        {{name}}
+                        {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{i.status}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+        <h4 style="text-align: center;">No Order in transit</h4>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+
+    // Logic for animation while entering the page.
+    $(document).ready(function () {
+        $(".new-orders").hide().fadeIn(2000)
+        $(".order-transit").hide().slideDown(2000)
+    })
+
+    // Logic for sent request to delivery partner
+    $(document).ready(function () {
+        $("#request-msg").hide();
+        $("#request-error").hide();
+        $(this).on("click", ".allot-button", function () {
+            let order_id = $(this).attr("data-o-id");
+            mythis = "#" + order_id;  // Created to select the id name 
+            let dp_id = $(mythis).val();
+            let my_data = {
+                order_id: order_id,
+                dp_id: dp_id,
+            }
+            $.ajax({
+                url: "{% url 'moveease_dp:request_order' %}",
+                type: "POST",
+                data: my_data,
+                success: function (value) {
+                    if (value.status == 1) {
+                        console.log("Request Sent Successfully");
+                        let new_value = "." + value.order_id;
+                        $(new_value).css({ "border-color": "green", "border-width": "2px 1px 1px 1px" }) // Code for create colour border while fade out
+                        $(new_value).fadeOut(1500);
+                        $("#request-msg").show();
+                        $("#request-msg").delay(1500).fadeOut('slow');
+                        console.log("Done");
+                    } else {
+                        console.log("Error");
+                        $("#request-error").show();
+                        $("#request-error").delay(1500).fadeOut('slow');
+                    }
+                }
+
+            })
+        })
+    })
+
+    // Logic for delete/cancel the order by delivery admin 
+    $(document).ready(function () {
+        $("#delete-msg").hide();
+        $(this).on("click", ".delete-button", function () {
+
+            let name = $(this).attr("data-name");
+            let order_id = $(this).attr("data-o-id");
+            let unique_id = $(this).attr("data-unique-id");
+            let status = $(this).attr("data-status");
+            let dp = $(this).attr("data-dp");
+            let t_amt = $(this).attr("data-total");
+            let f_amt = $(this).attr("data-fine");
+            let acc_id = $(this).attr("data-acc-id")
+            let order_date = $(this).attr("data-order-date")
+            let my_data = {
+                order_id: order_id, delivery: dp, unique_id: unique_id,
+                acc_id: acc_id, order_date: order_date, total_amount: t_amt,
+                fine_amount: f_amt, status: status
+            };
+            let msg = "Are you sure to delete " + name + "'s order?"
+            if (confirm(msg)) {
+                $.ajax({
+                    url: "{% url 'moveease_admin:reject' %}",
+                    method: "POST",
+                    data: my_data,
+                    success: function (value) {
+                        if (value.status == 1) {
+                            console.log("Rejected Successfully");
+                            let del_value = "." + value.order_id;
+                            $(del_value).css({ "border-color": "red", "border-width": "2px 1px 1px 1px" }) // Code for create colour border while fade out
+                            $(del_value).fadeOut(1500);
+                            $("#delete-msg").show();
+                            $("#delete-msg").delay(1500).fadeOut('slow');
+                            console.log("Done");
+                        } else {
+                            console.log("Error while sending email when cancelling order by admin ")
+                        }
+                    }
+                })
+            } else {
+                console.log("No delete")
+            }
+
+        })
+    })
+</script>
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}

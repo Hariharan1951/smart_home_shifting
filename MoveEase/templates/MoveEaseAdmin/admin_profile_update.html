@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+MoveEase | Admin-Personal Info
+{% endblock %}
+{% block body %}
+
+{% include 'MoveEaseAdmin/admin_navbar.html' %}
+
+<section class="admin-profile" style="margin-top:20px;">
+    <fieldset>
+        <legend style="margin: 10px 0px -16px 250px; background-color: white;width:138px;color:red;">Personal Info</legend>
+        <form method="post">
+            {% csrf_token %}
+            <div class="container" style="border:1px solid black; margin-top:10px;width:1000px;margin-bottom:20px;border-radius:30px;border-color:darkblue;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><label for="f-name" class="form-label">First Name</label></h6>
+                    </div>
+                    <div class="col-md-6" style="text-align:center">
+                        <input type="text" class="form-control" id="f-name" name="f-name" {% if customer.first_name != None %} value="{{customer.first_name}}" {% endif %} placeholder="Enter First Name">
+                        <p id="f-name-error" style="color:red;"></p>
+                    </div>
+                    
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><label for="l-name" class="form-label">Last Name</label></h6>
+                    </div>
+                    <div class="col-md-6" style="text-align:center">
+                        <input type="text" class="form-control" name="l-name" id="l-name" {% if customer.last_name != None %} value="{{customer.last_name}}" {% endif %} placeholder="Enter Last Name">
+                        <p id="l-name-error" style="color:red;"></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><label for="email" class="form-label">Email address</label></h6>
+                    </div>
+                    <div class="col-md-6" style="text-align:center">
+                        <input type="email" class="form-control" name="email" id="email" {% if customer.email != None %} value="{{customer.email}}" {% endif %} placeholder="name@example.com">
+                        <p id="email-error" style="color:red;"></p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><label for="ph-no" class="form-label">Phone Number*</label></h6>
+                    </div>
+                    <div class="col-md-6" style="text-align:center">
+                        <input type="text" class="form-control" name="ph-no" id="ph-no" {% if customer.phone_number != None %} value="{{customer.phone_number}}" {% endif %} placeholder="Enter Phone Number">
+                        <p id="ph-no-error" style="color:red;"></p>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button type="submit" class="btn btn-success" id="submit-button">Update</button>
+                </div>
+            </div>
+        </form>
+    </fieldset>
+
+</section>
+
+
+<style>
+    .row{
+        margin-top:10px;
+        margin-bottom:10px;
+    }
+
+    h6{
+        padding-top:10px;
+    }
+
+    button{
+        margin-bottom:10px;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function(){
+        $(this).on("click", "#submit-button", function(e){
+            let f_name = $("#f-name").val();
+            let l_name = $("#l-name").val();
+            let email = $("#email").val();
+            let ph_no = $("#ph-no").val();
+            let door_no = $("#door-no").val();
+            let street = $("#street").val();
+            let city = $("#city").val();
+            let state = $("#state").val();
+            let zipcode = $("#zipcode").val();
+
+
+            // Phone number validation
+            let ph_re = /^[6789][0-9]{9}$/; //regex pattern
+            let ph_res = ph_re.test(ph_no);  //regex method
+
+            if(ph_res){ 
+                $("#ph-no-error").hide();
+
+                if (confirm("Press ok to update\nPress Cancel to go back")){
+                    console.log("yes")
+                    alert("Updated Succesfully!....")
+                }else{
+                    e.preventDefault()
+                }
+            }else{
+                $("#ph-no-error").html("Invalid Phone Number");
+                $("#ph-no-error").show();
+                e.preventDefault();
+            };
+            
+        })
+    })
+
+</script>
+{% endblock %}

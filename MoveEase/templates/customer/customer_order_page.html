@@ -1,0 +1,670 @@
+{% extends 'base.html' %}
+{% block title %}
+MoveEase | Customer Order Page
+{% endblock %}
+
+{% block body %}
+{% include 'customer/customer_navbar.html' %}
+<section class="customer-live-order">
+    <div class="live-order-header" style="border:solid 1px #874949;color:blue; margin:10px 110px 3px 110px; border-radius:100px 100px 0px 0px">
+  <h4 style="text-align: center;"><em>Current orders</em></h4>
+    </div>
+        <div class="container" style="border: 1px solid lightgoldenrodyellow;font-size:small;box-shadow: 5px 5px 10px #874949;border-radius:0px 0px 10px 10px;border-top: none">
+            {% if live_order %}
+            <table class="table" style="text-align:center;">
+                <thead>
+                    <th>S.No</th>
+                    <th>From Address</th>
+                    <th>To Address</th>
+                    <th>Shifting Date</th>
+                    <th>Pickup Time</th>
+                    <th>Quantity</th>
+                    <th>Delivery Agent Name</th>
+                    <th>Phone Number</th>
+                    <th>Status</th>
+                    <th>OTP</th>
+                    <th>Action</th>
+                </thead>
+
+                <tbody>
+                {% for i in live_order %}
+                    <tr class="{{i.id}}"> 
+                        <td>{{forloop.counter}}</td>
+                        <td>{{i.fromAddress}}</td>
+                        <td>{{i.toAddress}}</td>
+                        <td>{{i.shifting_date}}</td>
+                        <td>{{i.pickup_time}}</td>
+                        <td>{{i.no_of_items}}</td>
+                
+                        {% if dp_name %}
+                            {% for key, values in dp_name.items %}
+                                {% if key == i.id %}
+                                    {% for name, ph_no in values %}
+                                    <td>{{name}}</td>
+                                    <td>{{ph_no}}</td>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <td>NA</td>
+                            <td>NA</td> 
+                        {% endif %}
+
+                        <td>{{i.status}}</td>
+                        <td>{{i.otp}}</td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button class="btn btn-info track-button" data-o-id={{i.id}} data-status="{{i.status}}">Track</button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-danger cancel-button" data-o-id={{i.id}} data-acc-id= {{i.account_id}} data-order-date="{{i.order_placed_date}}" data-unique-id="{{i.unique_order_id}}" data-fine ={{i.booking_amount}} data-total="{{i.total_amount}}" data-status="{{i.status}}" data-dp = "{{i.alloted_to}}"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div id="{{i.id}}" style="font-size:medium">
+
+                <div class="ordered" ><!---------------------Ordered------------------>
+                    <div class="progress" style="margin-left: 45px;margin-right: 45px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:12px"></div>
+                    </div>
+                    <div class="row" style="margin-top:-21px">
+                        <div class="col-sm-3" style="margin-left:44px;width:300px;">
+                            <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                            <h6 style="margin-left:-20px">Ordered</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:300px;">
+                            <i class="fa fa-dot-circle-o" style="margin-left:-30px" aria-hidden="true"></i>
+                            <h6 style="margin-left:-70px">Order Confirm</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-100px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-150px;">Ready For Pickup</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-50px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-80px;">Picking Up</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                                <h6 style="margin-left:-19px;">Transit</h6>
+                                </div>
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" style="margin-left:112px" aria-hidden="true"></i>
+                                <h6 style="margin-left:80px">Completed</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+
+
+
+                <div class="order-confirm"><!---------------------Order Confirmed------------------>
+                        <div class="progress" style="margin-left: 45px;margin-right: 45px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:282px"></div>
+                    </div>
+                    <div class="row" style="margin-top:-21px">
+                        <div class="col-sm-3" style="margin-left:44px;width:300px;">
+                            <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                            <h6 style="margin-left:-20px">Ordered</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:300px;">
+                            <i class="fa fa-dot-circle-o" style="margin-left:-30px" aria-hidden="true"></i>
+                            <h6 style="margin-left:-70px">Order Confirm</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-100px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-150px;">Ready For Pickup</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-50px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-80px;">Picking Up</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                                <h6 style="margin-left:-19px;">Transit</h6>
+                                </div>
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" style="margin-left:112px" aria-hidden="true"></i>
+                                <h6 style="margin-left:80px">Completed</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+
+
+
+                <div class="ready-for-pickup"><!---------------------Ready For Pickup------------------>
+                    <div class="progress" style="margin-left: 45px;margin-right: 45px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:512px"></div>
+                    </div>
+                    <div class="row" style="margin-top:-21px">
+                        <div class="col-sm-3" style="margin-left:44px;width:300px;">
+                            <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                            <h6 style="margin-left:-20px">Ordered</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:300px;">
+                            <i class="fa fa-dot-circle-o" style="margin-left:-30px" aria-hidden="true"></i>
+                            <h6 style="margin-left:-70px">Order Confirm</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-100px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-150px;">Ready For Pickup</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-50px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-80px;">Picking Up</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                                <h6 style="margin-left:-19px;">Transit</h6>
+                                </div>
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" style="margin-left:112px" aria-hidden="true"></i>
+                                <h6 style="margin-left:80px">Completed</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+
+
+
+
+                <div class="pickup"><!---------------------Picking Up------------------>
+                    <div class="progress" style="margin-left: 45px;margin-right: 45px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:662px"></div>
+                    </div>
+                    <div class="row" style="margin-top:-21px">
+                        <div class="col-sm-3" style="margin-left:44px;width:300px;">
+                            <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                            <h6 style="margin-left:-20px">Ordered</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:300px;">
+                            <i class="fa fa-dot-circle-o" style="margin-left:-30px" aria-hidden="true"></i>
+                            <h6 style="margin-left:-70px">Order Confirm</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-100px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-150px;">Ready For Pickup</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-50px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-80px;">Picking Up</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                                <h6 style="margin-left:-19px;">Transit</h6>
+                                </div>
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" style="margin-left:112px" aria-hidden="true"></i>
+                                <h6 style="margin-left:80px">Completed</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+
+
+
+
+
+
+                <div class="transit"><!---------------------Transit------------------>
+                    <div class="progress" style="margin-left: 45px;margin-right: 45px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:812px"></div>
+                    </div>
+                    <div class="row" style="margin-top:-21px">
+                        <div class="col-sm-3" style="margin-left:44px;width:300px;">
+                            <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                            <h6 style="margin-left:-20px">Ordered</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:300px;">
+                            <i class="fa fa-dot-circle-o" style="margin-left:-30px" aria-hidden="true"></i>
+                            <h6 style="margin-left:-70px">Order Confirm</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-100px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-150px;">Ready For Pickup</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-50px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-80px;">Picking Up</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                                <h6 style="margin-left:-19px;">Transit</h6>
+                                </div>
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" style="margin-left:112px" aria-hidden="true"></i>
+                                <h6 style="margin-left:80px">Completed</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+
+
+
+
+                <div class="completed"><!---------------------Completed------------------>
+                    <div class="progress" style="margin-left: 45px;margin-right: 45px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:100%"></div>
+                        </div>
+                    <div class="row" style="margin-top:-21px">
+                        <div class="col-sm-3" style="margin-left:44px;width:300px;">
+                            <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                            <h6 style="margin-left:-20px">Ordered</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:300px;">
+                            <i class="fa fa-dot-circle-o" style="margin-left:-30px" aria-hidden="true"></i>
+                            <h6 style="margin-left:-70px">Order Confirm</h6>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-100px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-150px;">Ready For Pickup</h6>
+                                </div>
+                                <div class="col-md-6">
+                                    <i class="fa fa-dot-circle-o" style="margin-left:-50px;" aria-hidden="true"></i>
+                                    <h6 style="margin-left:-80px;">Picking Up</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="width:200px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                                <h6 style="margin-left:-19px;">Transit</h6>
+                                </div>
+                                <div class="col-md-6">
+                                <i class="fa fa-dot-circle-o" style="margin-left:112px" aria-hidden="true"></i>
+                                <h6 style="margin-left:80px">Completed</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div>
+
+        {% else %}
+           <h6 style="text-align: center;">No current Orders</h6>
+        {% endif %} 
+    </div>
+
+</section>
+
+<section class="order-history" style="margin-top:50px;margin-bottom:50px; font-size:small;">
+    <div class="live-order-header" style="border:solid 1px #874949;color:rgb(208, 48, 77);background-color:yellowgreen;font-family:serif ; margin:10px 110px 3px 110px; border-radius:100px 100px 100px 100px">
+       <h4 style="text-align: center;">Order History</h4>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row sorting-button" style="margin:2px 110px 2px 110px;">
+            <div class="col-md-2">
+                <button type="submit" style="margin-left:25px;" class="btn btn-outline-primary btn-sm" name="sort-button" value="Sort By Name">Sort by Name</button>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary btn-sm" name="sort-button" value="Sort By Date">Sort by Date</button>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary btn-sm" name="sort-button" value="Sort By Status">Sort by Status</button>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary btn-sm" name="sort-button" value="Sort By Order Id">Sort by Order Placed</button>
+            </div>
+
+            <div class="col-md-4">
+                <div class="row" style="padding-left:0px">
+                    <div class="col-md-9" style="margin-right:0px;padding-right:0px;" >
+                        <input type="date" class="form-control" style="font-size:small;border-color:rgb(111, 205, 237)" min="0" name="date" id="date" placeholder="Date">
+                    </div>
+                    <div class="col-md-3" style="margin-left:0px;padding-left:0px;">
+                        <button type="submit" class="btn btn-outline-primary btn-sm" name="sort-button" value="Search">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    
+    <div class="container" style="border: 1px solid lightgoldenrodyellow;box-shadow: 5px 5px 10px #874949;border-radius:0px 0px 10px 10px;border-top: none">
+        {% if order_history %}
+        <table class="table table-borderless mb-0" style="text-align:center;">
+            <thead>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>From Address</th>
+                <th>To Address</th>
+                <th>Shifting Date</th>
+                <th>Item Nos</th>
+                <th>Delivery Agent Name</th>
+                <th>Status</th>
+                <th>Review</th>
+            </thead>
+
+            <tbody>
+            {% for i in order_history %}
+                <tr class="{{i.id}}"> 
+                    <td>{{forloop.counter }}</td> <!--{{forloop.counter}} used for getting s.no,  if we want from `0` we use {{forloop.counter0}}-->
+                    <td>{{i.customer_name}}</td>
+                    <td>{{i.fromAddress}}</td>
+                    <td>{{i.toAddress}}</td>
+                    <td>{{i.shifting_date}}</td>
+                    <td>{{i.no_of_items}}</td>
+    
+                    {% if i.delivery_preson_account_id == None %}
+                        <td>NA</td>
+                    {% else %}
+                        <td>{{i.delivery_person_name}}</td>
+                    {% endif %}
+
+                    <td>{{i.status}}</td>
+                    <td>{% if i.customer_rating == None %}
+                        <button class="btn btn-warning rating-review" type="button" data-rating="{{i.customer_rating}}" data-status = "{{i.status}}" data-review="{{i.customer_review}}" data-ord-id ={{i.id}} data-counter="{{forloop.counter}}">Give Rating</button>
+                        {% else %}
+                        <button class="btn btn-warning rating-review" type="button" data-rating="{{i.customer_rating}}" data-status = "{{i.status}}" data-review="{{i.customer_review}}" data-ord-id ={{i.id}} data-counter="{{forloop.counter}}">View/Edit Rating</button>
+                        {% endif %}
+                    </td>
+                    
+                </tr>
+                
+                <tr>
+                    <td colspan="9">
+                        <div class="cus-review" id="{{i.id}}" style="border:solid 1px orange; box-shadow:5px 5px 10px orangered;margin-bottom:10px;">
+                    
+                            <div class="row" style="margin-top:10px;text-align: center;">
+                                <p><strong>Rating & Feedback for S.no({{forloop.counter}})</strong></p>
+                                <hr style="width:225px;margin-top:-15px;margin-left:450px">
+                            </div>
+                            <div class="row" style="margin-top:10px;margin-bottom:10px;text-align:center;">
+                                <div class="col-md-6" >
+                                    <div style="text-align: center;">
+                                    <strong><label for="customer-rating-{{i.id}}" class="form-label"><u>RATING</u></label></strong>
+                                    </div>
+                                    <input type="range" style="width:450px;" class="range" min="1" max="5" step="0.5" {% if i.customer_rating != None %} value={{i.customer_rating}} {% endif %} id="customer-rating-{{i.id}}">
+                                    
+                                    <div class="row" style="margin-top:-8px;padding-top:0px">
+                                        <div class="col-sm-2" style="margin-left:19px;">
+                                            <h6 style="color:red">Poor</h6>  
+                                        </div>
+                                        <div class="col-sm-2" style="margin-left:13px;">
+                                            <h6 style="color:orange">Fair</h6>     
+                                        </div>
+                                        <div class="col-sm-2" style="margin-left:16px;">
+                                            <h6 style="color:rgb(219, 219, 7)">Average</h6>
+                                        </div>
+                                        <div class="col-sm-2" style="margin-left:12px;">
+                                            <h6 style="color:rgb(83, 253, 83)">Good</h6>  
+                                        </div>
+                                        <div class="col-sm-2" style="margin-left:15px;">
+                                            <h6 style="color:rgb(1, 196, 1)">Excellent</h6>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div style="text-align: center;">
+                                        <strong><label for="customer-review-{{i.id}}" class="form-label"><u>FEEDBACK</u></label></strong>
+                                    </div>
+                                        <textarea class="form-control" id="customer-review-{{i.id}}" {% if i.customer_review == None %} placeholder="Write reviews here...."{% endif %}>{% if i.customer_review != None %} {{i.customer_review}}{% endif %}</textarea>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-bottom:10px">
+                                <div style="text-align: center;">
+                                    <button type="submit" class="btn btn-success" id="cus-review-submit" data-ord-id ={{i.id}} data-counter="{{forloop.counter}}">Submit</button>
+                                </div>
+                                </div>
+
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="mb-3" >
+            <p id="rating-msg" style="color:red;border-radius:100px 100px 100px 100px;width:20%;background-color:rgb(182, 253, 182);margin-top:15px;margin-left: 435px;text-align:center;">Thankyou for your review!!</p>
+        </div>
+
+        {% else %}
+            <h6 style="text-align:center;">No orders.....</h6>
+        {% endif %} 
+
+
+    </div>    
+</section>
+
+
+<script>
+ 
+    // Logic for animation while entering the page.
+    $(document).ready(function(){
+        $(".customer-live-order").hide().fadeIn(500)
+        $(".order-history").hide().slideDown(500)
+    })
+
+    // Order Cancel
+    $(document).ready(function(){
+        $("#cancel-msg").hide();
+        $(this).on("click", ".cancel-button",function(){
+            let order_id = $(this).attr("data-o-id");
+            let unique_id = $(this).attr("data-unique-id");
+            let status = $(this).attr("data-status");
+            let dp = $(this).attr("data-dp");
+            let t_amt = $(this).attr("data-total");
+            let f_amt = $(this).attr("data-fine");
+            let acc_id = $(this).attr("data-acc-id")
+            let order_date = $(this).attr("data-order-date")
+            let my_data = {order_id:order_id, delivery:dp, unique_id:unique_id,
+                    acc_id:acc_id, order_date:order_date, total_amount:t_amt,
+                fine_amount:f_amt, status:status};
+            
+            if (status != 'ORDERED'){
+                let msg = "Cancellation charge is Rs." + f_amt + " is applicable.\nDo You want to cancel your order?"
+                if (confirm(msg)){
+                    console.log("yes")
+                    $.ajax({
+                        url: "{% url 'moveease_customer:cancel_order' %}",
+                        method: "POST",
+                        data: my_data,
+                        success: function(value){
+                            if (value.status == 1){
+                                console.log("Cancelled Successfully");
+                                let refund_amount = Number(t_amt) - Number(f_amt)
+                                let del_value = "." + value.order_id;
+                                $(del_value).css({"border-color":"red","border-width": "3px 1px 1px 1px"}) // Code for create colour border while fade out
+                                $(del_value).fadeOut(1500);
+                                $("#cancel-msg").show();
+                                $("#cancel-msg").delay(2000).fadeOut('slow');
+                                alert("Your amount of Rs." + refund_amount + " will be refunded within 3-5 working days.")
+                        }else if (value.status == 2){
+                            console.log("Error while sending mail to the customer when order cancelled by customer")
+                        }else{
+                            console.log("Error in cancelling order")
+                        }
+                    }
+                    })
+                    
+                }else{
+                    console.log("no")
+                }
+            }else{
+                if (confirm("Do You want to cancel your order?")){
+                    console.log("yes")
+
+                    $.ajax({
+                        url: "{% url 'moveease_customer:cancel_order' %}",
+                        method: "POST",
+                        data: my_data,
+                        success: function(value){
+                            if (value.status == 1){
+                                console.log("Cancelled Successfully");
+                                let del_value = "." + value.order_id;
+                                $(del_value).css({"border-color":"red","border-width": "2px 1px 1px 1px"}) // Code for create colour border while fade out
+                                $(del_value).fadeOut(1500);
+                                $("#cancel-msg").show();
+                                $("#cancel-msg").delay(2000).fadeOut('slow');   
+                                alert("Your amount of Rs." + t_amt + " will be refunded within 3-4 working days.")
+                        }}
+                    })
+                    
+                }else{
+                    console.log("no")
+                } 
+            }   
+        })
+    })  
+
+
+    //track button
+    $(document).ready(function(){
+        $(".ordered").hide();
+        $(".order-confirm").hide();
+        $(".ready-for-pickup").hide();
+        $(".pickup").hide();
+        $(".transit").hide();
+        $(".completed").hide();
+        $(this).on("click", ".track-button",function(){
+            let order_id = $(this).attr("data-o-id");
+            let status = $(this).attr("data-status");
+            let new_value = "." + order_id;
+            
+            if (status == "ORDERED"){
+                $(".ordered").slideToggle("fast")
+                $(".order-confirm").hide();
+                $(".ready-for-pickup").hide();
+                $(".pickup").hide();
+                $(".transit").hide();
+                $(".completed").hide();
+            }else if(status == "ORDER CONFIRMED"){
+                $(".order-confirm").slideToggle("fast")
+                $(".ordered").hide();
+                $(".ready-for-pickup").hide();
+                $(".pickup").hide();
+                $(".transit").hide();
+                $(".completed").hide();
+            }else if(status == "READY FOR PICKUP"){
+                $(".ready-for-pickup").slideToggle("fast");
+                $(".ordered").hide();
+                $(".order-confirm").hide();
+                $(".pickup").hide();
+                $(".transit").hide();
+                $(".completed").hide();
+            }else if(status == "PICKING UP"){
+                $(".pickup").slideToggle("fast");
+                $(".ordered").hide();
+                $(".order-confirm").hide();
+                $(".ready-for-pickup").hide();
+                $(".transit").hide();
+                $(".completed").hide();
+            }else if(status == "TRANSIT"){
+                $(".transit").slideToggle("fast")
+                $(".ordered").hide();
+                $(".order-confirm").hide();
+                $(".ready-for-pickup").hide();
+                $(".pickup").hide();
+                $(".completed").hide();
+            }else{
+                $(".completed").slideToggle("fast")
+                $(".ordered").hide();
+                $(".order-confirm").hide();
+                $(".ready-for-pickup").hide();
+                $(".pickup").hide()
+                $(".transit").hide();
+            }
+        })
+    })
+
+
+    // Logic for review
+    $(document).ready(function(){
+        $(".cus-review").hide()
+        $("#rating-msg").hide()
+        $(this).on("click", ".rating-review", function(){
+            let order_id = $(this).attr("data-ord-id");
+            let count = $(this).attr("data-counter");
+            let status = $(this).attr("data-status");
+            if (status == "REJECTED" || status == "COMPLETED"){
+                new_value = "#"+order_id;
+                $(new_value).slideToggle(1000);
+            }else{
+                alert("You can give rating and review after the order is rejected or completed..")
+            }  
+        })
+    })
+            
+    
+    // Logic for submit button
+    $(document).ready(function(){
+        $(this).on("click","#cus-review-submit", function(){
+            let order = $(this).attr("data-ord-id")
+            let customer_rating_id = "#customer-rating-"+order
+            let customer_review_id = "#customer-review-"+order
+            let rating = $(customer_rating_id).val();
+            let review = $(customer_review_id).val();
+            let my_data = {order_id:order, rating:rating, review:review,}
+            $.ajax({
+                url:"{% url 'moveease_customer:review_rating' %}",
+                method: "POST",
+                data: my_data,
+                success: function(value){
+                    if (value.status == 1){
+                        console.log("Rating and reviews are updated successfully")
+                        $("#rating-msg").show().delay(1500).fadeOut("slow")
+                        new_value = "#"+value.order_id;
+                        $(new_value).fadeOut(2000);
+                    }else{
+                        console.log("Error while updating reviews and ratings")
+                    }
+                }
+            })
+                    
+        })
+    })   
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delivery Partner | Register{% endblock %}
+
+{% block body %}
+
+{% include 'deliveryAdmin/delivery_navbar.html' %}
+<section class="admin-registration" style="background: linear-gradient(to right, #bdc3c7, #2c3e50);">
+    <div class="container" style="text-align: center;border:1px solid white;border-radius:30px; box-shadow:2px 2px 40px white;border-bottom:none">
+        <br>
+        <h3>DELIVERY PARTNER REGISTRATION</h3>
+        <hr>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% for i in form %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <label><h6>{{i.label}}</h6></label>
+                    </div>
+                    <div class="col-md-6">
+                        {{i}}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    {% for error in i.errors %}
+                    <small style="color: red;background:white;border-radius:10px">{{ error }}</small>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary btn-lg" style="font-size:larger"> Sign up</button><br>
+            <hr>
+            <label style="font-size:larger;margin-bottom:20px">Already have an account ?<a href="{% url 'moveease_dp:dp_login' %}" style="color:white; text-decoration: none;"><em>Login Here</em></a></label>
+        </form>
+    </div>
+</section>
+{% endblock %}

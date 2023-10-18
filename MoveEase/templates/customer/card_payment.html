@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+MoveEase | Card Payment
+{% endblock %}
+{% block body %}
+<section class="netbanking-section">
+    <div class="container"
+        style="width:400px;border: solid 2px lightblue;padding:0px;margin-top:100px;text-align:center">
+        <div class="header" style="background-color:lightblue;">
+            <p style="font-size:30px">Card Payment Site</p>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="row" style="margin:10px 3px 10px 3px;">
+                <div class="col-md-8">
+                    <input id="card-number" type="text" class="form-control" placeholder="Enter Card Number" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" id="exp-card" class="form-control" placeholder="Expiry Date"
+                        onfocus="(this.type='month')" required>
+                </div>
+            </div>
+            <div class="row" style="margin:10px 3px 10px 3px;">
+                <div class="col-md-8">
+                    <input type="text" id="holder-name" class="form-control" placeholder="Card Holder Name" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="password" id="card-cvv" class="form-control" placeholder="CVV" required>
+                </div>
+            </div>
+            <hr>
+            <button type="submit" id="back-button" style="margin-right:30px;" class="btn btn-danger">Back</button>
+            <button type="submit" id="submit-button" data-amount={{customer_info.discounted_amount}}
+                style="float:right; margin-right:100px" class="btn btn-primary">Login</button>
+
+        </form>
+        <button id="pay-button" class="btn btn-outline-success" data-amount={{customer_info.discounted_amount}}>Press
+            here to pay Rs. {{customer_info.discounted_amount}}</button>
+
+        <div class="mb-3" style="text-align:center">
+            <p id="amount-msg" style="color:green;">Transaction Successful!!</p>
+        </div>
+
+        <div class="mb-3" style="text-align:center">
+            <p id="card-error-msg" style="color:red;"></p>
+        </div>
+
+    </div>
+
+</section>
+
+<script>
+
+    // Logic for back button
+    $(document).ready(function () {
+        $("#back-button").on("click", function () {
+            console.log("Pressed back button")
+            window.location = "{% url 'moveease_customer:payment_page' %}" // Back to payment page
+        })
+    })
+
+
+    // Logic for Paying
+    $(document).ready(function () {
+        $("#card-error-msg").hide()
+        $("#amount-msg").hide();
+        $("#pay-button").hide();
+        $("#submit-button").on("click", function (e) {
+            let name = $("#holder-name").val();
+            let card_number = Number($("#card-number").val());
+            let cvv = Number($("#card-cvv").val());
+            let expiry = new Date($("#exp-card").val());
+            let currentDate = new Date();
+
+            $("#card-error-msg").html("")
+            e.preventDefault()
+            if (typeof (card_number) == "number" && (card_number.toString()).length == 16) {
+                if (currentDate < expiry) {
+                    if (isNaN(name)) {
+                        if (typeof (cvv) == "number" && (cvv.toString()).length == 3) {
+                            if (isNaN(cvv)) {
+                                console.log("CVV Error");
+                                $("#card-error-msg").html("Invalid CVV");
+                            } else {
+                                console.log("All are correct")
+                                $("form").fadeOut(2000);
+                                $("#pay-button").fadeIn(1500);
+                            }
+                        } else {
+                            console.log("CVV Error");
+                            $("#card-error-msg").html("Invalid CVV");
+                        }
+                    } else {
+                        console.log("Name error");
+                        $("#card-error-msg").html("Invalid Card Holder Name");
+                    }
+                } else {
+                    console.log("Expiry Date error")
+                    $("#card-error-msg").html("Invalid Expiry Date");
+                }
+            } else {
+                console.log("Card Number Error");
+                $("#card-error-msg").html("Invalid Card Number");
+            }
+            $("#card-error-msg").show()
+            $("#card-error-msg").delay(2000).fadeOut("slow")
+        })
+    })
+
+    //Logic for Paying 2(If all logic are in same function, it happens very very fast. So it is separated as different function)
+    $(document).ready(function () {
+        $("#pay-button").click(function () {
+            let total_amount = $("#pay-button").attr("data-amount");
+            let msg = "Press OK to pay Rs." + total_amount;
+            if (confirm(msg)) {
+                console.log("Paid");
+                $("#pay-button").fadeOut(1000);
+                $("#amount-msg").fadeIn(1000);
+                $("#amount-msg").delay(3000).fadeOut("slow");
+                let my_data = { payment_mode: "CARD" };
+                $.ajax({
+                    url: "{% url 'moveease_customer:payment_update' %}",
+                    type: "POST",
+                    data: my_data,
+                    success: function (value) {
+                        if (value.status == 1) {
+                            alert("Your Transaction is Successful!!");
+                            alert("Success!! Your Order is Confirmed!!!");
+                            window.location = "{% url 'moveease_customer:home' %}";
+                        } else {
+                            alert("Your Transaction is Denied!!");
+                            console.log("Error while updating payment mode(CARD payment) in database")
+                        }
+                    }
+                })
+
+            } else {
+                console.log("not paid");
+            }
+        })
+    })
+</script>
+{% endblock %}

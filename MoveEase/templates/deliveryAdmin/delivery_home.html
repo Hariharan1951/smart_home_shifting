@@ -1,0 +1,359 @@
+{% extends 'base.html'%}
+{% block title %}
+MoveEase | Delivery Partner Home
+{% endblock %}
+{% block body %}
+    {% include 'deliveryAdmin/delivery_navbar.html' %}
+    
+    <section class="availability" style="margin-bottom:10px; margin-top:10px">
+        <div class="container" style="border:solid 1px black; box-shadow: 10px 10px 8px;">
+            <div class="form-group row">
+                <div class="col-sm-9">
+                    <label for="from_address" class="col-sm-2 col-form-label" style="padding-left:6%"><strong>Availability?</strong></label>
+                </div>
+                <div class="col-sm-3">
+                    <input type="checkbox" id="available" data-availability={{request.user.transit}} {% if request.user.transit == 0 %} checked {% endif %} data-toggle="toggle" data-on="Online" data-off="Offline" data-onstyle="success" data-offstyle="secondary">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="order-confirmation">
+        <h4 style="border:1px solid green; border-radius:10px;width:300px;margin-top:20px;margin-bottom:0px;margin-left:525px;text-align: center;"><em>Orders Received</em></h4>
+        <div class="container" style="border: 1px solid green;border-radius:10px;box-shadow: 5px 10px 25px lightgreen; margin-top:0px;margin-bottom:50px;">
+            {% if order_received %}
+            <table class="table table-striped" style="text-align:center">
+                <thead>
+                    <th>S.No</th>
+                    <th>Customer Name</th>
+                    <th>Phone Number</th>
+                    <th>From Address</th>
+                    <th>To Address</th>
+                    <th>Shifting Date</th>
+                    <th>Pickup Time</th>
+                    <th>Action</th>
+                </thead>
+
+                <tbody>
+                {% for i in order_received %}
+                    <tr class="{{i.id}}"> 
+                        <td>{{forloop.counter}}</td>
+                        <td>{{i.customer_name}}</td>
+                        <td>{{i.ph_no}}</td>
+                        <td>{{i.fromAddress}}</td>
+                        <td>{{i.toAddress}}</td>
+                        <td>{{i.shifting_date}}</td>
+                        <td>{{i.pickup_time}}</td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <button class="btn btn-success accept-button" data-o-id={{i.id}} data-acc-id= {{i.account_id}} data-unique-id="{{i.unique_order_id}}" data-dp-id={{i.alloted_to}}><i class="fa fa-check" aria-hidden="true"></i></button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-danger delete-button" data-o-id={{i.id}} data-dp-id={{i.alloted_to}}><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+                <div class="mb-3">
+                    <p id="accept-msg" style="color:red;border-radius:100px 100px 100px 100px;width:20%;background-color:rgb(182, 253, 182);margin-left:445px;text-align: center;">Accepted!!</p>
+                </div>
+
+            
+                <div class="mb-3">
+                    <p id="reject-msg" style="color:darkgreen;border-radius:100px 100px 100px 100px;width:20%;background-color:rgb(247, 167, 167);margin-left:445px;text-align: center;">Rejected!!</p>
+                </div>
+            
+
+            {% else %}
+                <h4 style="text-align: center;">No Order Received Yet..</h4>
+            {% endif %} 
+        </div>
+    </section>
+        
+    <section class="current-order" style="font-size:small;">
+        <h4 style="border:1px solid darkblue; border-radius:10px;width:300px;margin-bottom:0px;margin-left:525px;text-align: center;"><em>Current Orders</em></h4>
+        <div class="container" style="border: 1px solid darkblue;border-radius:10px; box-shadow: 5px 10px 25px rgb(80, 69, 194); margin-top:0px;margin-bottom:50px;">
+        {% if current_orders %}
+        <table class="table table-striped" style="text-align:center">
+            <thead>
+                <th>S.No</th>
+                <th>Customer Name</th>
+                <th>Phone Number</th>
+                <th>From Address</th>
+                <th>To Address</th>
+                <th>Shifting Date</th>
+                <th>Pickup Time</th>
+                <th>Status</th>
+                <th>Action</th>
+                
+            </thead>
+
+            <tbody>
+            {% for i in current_orders %}
+                <tr class="live-{{i.id}}">
+                    <td>{{forloop.counter}}</td>
+                    <td>{{i.customer_name}}</td>
+                    <td>{{i.ph_no}}</td>
+                    <td>{{i.fromAddress}}</td>
+                    <td>{{i.toAddress}}</td>
+                    <td>{{i.shifting_date}}</td>
+                    <td>{{i.pickup_time}}</td>
+
+                    <td>
+                        <select class="form-select live-status" data-o-id={{i.id}}>
+                                <option value="ORDER CONFIRMED" {% if i.status == "ORDER CONFIRMED" %} selected {% endif %}>Order Confirmed</option>
+                                <option value="READY FOR PICKUP" {% if i.status == "READY FOR PICKUP" %} selected {% endif %}>Ready For Pickup</option>
+                                <option value="PICKING UP" {% if i.status == "PICKING UP" %} selected {% endif %}>Picking Up</option>
+                                <option value="TRANSIT" {% if i.status == "TRANSIT" %} selected {% endif %}>Transit</option>
+                        </select>
+                    </td>
+                    <td>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-success complete-button" data-o-id={{i.id}} data-acc-id= {{i.account_id}} data-order-date="{{i.order_placed_date}}" data-unique-id="{{i.unique_order_id}}" data-fine ={{i.booking_amount}} data-total="{{i.total_amount}}" data-status="{{i.status}}" data-dp = "{{i.alloted_to}}" data-otp={{i.otp}} data-cus-name="{{i.customer_name}}" >Complete</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-danger cancel-button" data-o-id={{i.id}} data-acc-id= {{i.account_id}} data-name={{i.customer_name}} data-order-date="{{i.order_placed_date}}" data-unique-id="{{i.unique_order_id}}" data-dp = "{{i.alloted_to}}">Cancel</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        
+            <div class="mb-3">
+                <p id="status-msg" style="color:red;border-radius:100px 100px 100px 100px;width:20%;background-color:rgb(182, 253, 182);margin-left:445px;text-align: center;">Updated Successfully</p>
+            </div>
+        
+
+        
+            <div class="mb-3">
+                <p id="cancel-msg" style="color:darkgreen;border-radius:100px 100px 100px 100px;width:20%;background-color:rgb(247, 167, 167);margin-left:445px;text-align: center;">Order Cancelled!!</p>
+            </div>
+        
+        
+            <div class="mb-3">
+                <p id="completed-msg" style="color:black;border-radius:100px 100px 100px 100px;width:25%;background-color:rgb(245, 184, 241);margin-left:415px;text-align: center;">Order Completed Successfully !!</p>
+            </div>
+        
+
+        {% else %}
+            <h4 style="text-align: center;">Sorry!! No current orders</h4>
+        {% endif %} 
+        </div>
+    </section>
+
+    <script>
+
+        // Logic for animation while entering the page.
+        $(document).ready(function(){
+            $(".order-confirmation").hide().fadeIn(1000)
+            $(".current-order").hide().fadeIn(1000)
+            
+        })
+
+        //Logic for availability
+        $(document).ready(function(){
+            $("#available").change(function(){
+                let availability = $(this).attr("data-availability");
+                let my_data = {availability:availability};
+                $.ajax({
+                    url: "{% url 'moveease_dp:availability' %}",
+                    method: "POST",
+                    data: my_data,
+                    success:function(value){
+                        console.log("Changed Successfully") // Checking message
+                    }
+                })
+                console.log("off")    
+            })
+        })
+
+        // Logic for accept the order
+        $(document).ready(function(){
+            $("#accept-msg").hide();
+            $(this).on("click", ".accept-button", function(){
+                let order_id = $(this).attr("data-o-id");
+                let dp_id =  $(this).attr("data-dp-id");
+                let unique_id = $(this).attr("data-unique-id");
+                let acc_id = $(this).attr("data-acc-id")
+                let my_data = {order_id: order_id, dp_id:dp_id,unique_id:unique_id, acc_id:acc_id};
+                $.ajax({
+                    url: "{% url 'moveease_dp:accept_order' %}",
+                    method: "POST",
+                    data: my_data,
+                    success:function(value){
+                        if (value.status == 1){
+                            console.log("Accepted Successfully");
+                            let new_value = "." + value.order_id;
+                            $(new_value).css({"border-color":"green","border-width": "2px 1px 1px 1px"}).fadeOut(1500); // Chaining reaction
+                            $("#accept-msg").show();
+                            $("#accept-msg").delay(1000).fadeOut('slow');
+                            console.log("Done");
+                        }else{
+                            console.log("Error while sending mail to the customer, after the order accept by the delivery partner");
+                        }
+                    }
+                })
+            })
+        })
+
+
+        // Logic for rejection
+        $(document).ready(function(){
+            $("#reject-msg").hide();
+            $(this).on("click", ".delete-button", function(){
+                let rej_order_id = $(this).attr("data-o-id");
+                let rej_dp_id =  $(this).attr("data-dp-id");
+                let my_data = {rej_order_id: rej_order_id, rej_dp_id:rej_dp_id,};
+                console.log("enterd")
+                $.ajax({
+                    url: "{% url 'moveease_dp:reject_order' %}",
+                    method: "POST",
+                    data: my_data,
+                    success:function(value){
+                        if (value.stat == 1){
+                            console.log("Rejected Successfully");
+                            let new_value = "." + value.order_id;
+                            $(new_value).css({"border-color":"red","border-width": "2px 1px 1px 1px"}).fadeOut(1500); // Chaining reaction
+                            $("#reject-msg").show();
+                            $("#reject-msg").delay(1000).fadeOut('slow');
+                            console.log("Done");
+                        }else{
+                            console.log("Error");
+                        }
+                    }
+                })
+            })
+        })
+
+
+        // Logic for status change
+        $(document).ready(function(){
+            $("#status-msg").hide();
+            $(this).on("change",".live-status", function(){
+                console.log("Select option changed");  //checking
+                let status = $(this).val();
+                let order_id = $(this).attr("data-o-id");
+                let my_datas = {status:status, order_id:order_id};
+                $.ajax({
+                    url: "{% url 'moveease_dp:live_status' %}",
+                    method:"POST",
+                    data: my_datas,
+                    success: function(value){
+                        if (value.status == 1){
+                            console.log("Updated status in database")
+                            $("#status-msg").show();
+                            $("#status-msg").delay(1000).fadeOut('slow')
+                        }else{
+                            console.log("Error while updating status in database")
+                        }
+                    }
+                })
+
+            })
+        })
+
+
+        //Logic for complete the order
+        $(document).ready(function(){
+            $("#completed-msg").hide();
+            $(this).on("click", ".complete-button", function(){
+                let order_id = $(this).attr("data-o-id");
+                let unique_id = $(this).attr("data-unique-id");
+                let status = $(this).attr("data-status");
+                let dp = $(this).attr("data-dp");
+                let t_amt = $(this).attr("data-total");
+                let f_amt = $(this).attr("data-fine");
+                let acc_id = $(this).attr("data-acc-id")
+                let order_date = $(this).attr("data-order-date")
+                let otp = $(this).attr("data-otp")
+
+                let cus_name = $(this).attr("data-cus-name")
+                let my_data = {order_id:order_id, dp_id:dp, unique_id:unique_id,
+                     acc_id:acc_id, order_date:order_date, total_amount:t_amt,
+                    fine_amount:f_amt, status:status};
+                let otp_prompt = prompt("Enter OTP from the customer to complete the order"); // To get the input from the prompt
+                if (otp_prompt == otp){
+                    let msg = "Is " + cus_name + " transit is completed?" 
+                    if(confirm(msg)){                                   // This line is for confirm popup box
+                        $.ajax({
+                            url: "{% url 'moveease_dp:order_completed' %}",
+                            method: "POST",
+                            data: my_data,
+                            success: function(value){
+                                if (value.status == 1){
+                                    console.log("Order completed successfully")
+                                    let new_value = ".live-" + value.order_id;
+                                    $(new_value).css({"border-color":"violet","border-width": "2px 1px 1px 1px"}).fadeOut(1500); // Chaining reaction
+                                    $("#completed-msg").show();
+                                    $("#completed-msg").delay(1000).fadeOut('slow');
+                                }else{
+                                    console.log("Error while order completion in delivery partner side")
+                                }
+                            }
+                        })
+                    }else{
+                        console.log("Cancelled")
+                    }
+                }else{
+                    console.log("wrong otp");
+                    alert("The enterd OTP is not match with customer OTP!!!\nPlese Try Again");
+                }
+                
+            })
+        })
+
+        // Logic for cancel the order(follows same logic as delete button) but it sent mail to the customer
+        $(document).ready(function(){
+            $("#cancel-msg").hide();
+            $(this).on("click", ".cancel-button", function(){
+
+                let name = $(this).attr("data-name")
+                let order_id = $(this).attr("data-o-id");
+                let unique_id = $(this).attr("data-unique-id");
+                let dp = $(this).attr("data-dp");
+                let acc_id = $(this).attr("data-acc-id")
+                let order_date = $(this).attr("data-order-date")
+                let my_data = {order_id:order_id, delivery:dp, unique_id:unique_id,
+                     acc_id:acc_id, order_date:order_date,};
+                let msg = "Are you sure to delete " + name + "'s order?"
+                if (confirm(msg)){
+                    $.ajax({
+                    url: "{% url 'moveease_dp:reject_order_email' %}",
+                    method: "POST",
+                    data: my_data,
+                    success:function(value){
+                        if (value.stat == 1){
+                            console.log("Rejected Successfully");
+                            let new_value = ".live-" + value.order_id;
+                            $(new_value).css({"border-color":"red","border-width": "2px 1px 1px 1px"}).fadeOut(1500); // Chaining reaction
+                            $("#cancel-msg").show();
+                            $("#cancel-msg").delay(1000).fadeOut('slow');
+                        }else{
+                            console.log("Error while cancel the order in delivery admin page");
+                        }
+                    }
+                })
+                }else{
+                    console.log("No delete")
+                }
+
+            })
+        })
+    </script>
+
+
+    
+{% endblock %}
+
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock  %}

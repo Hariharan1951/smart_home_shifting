@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+MoveEase | UPI Payment
+{% endblock %}
+{% block body %}
+<section class="upi-payment-section">
+    <div class="container"
+        style="width:400px;border: solid 2px lightblue;padding:0px;margin-top:100px;text-align:center">
+        <div class="header" style="background-color:lightblue;">
+            <p style="font-size:30px">UPI Payment</p>
+        </div>
+        <button id="pay-button" class="btn btn-outline-success" data-amount={{customer_info.discounted_amount}}>Press
+            here to pay Rs. {{customer_info.discounted_amount}}</button>
+        <div style="text-align: center;"><button type="submit" id="back-button" style="margin-top:20px"
+                class="btn btn-danger">Back</button></div>
+
+        <div class="mb-3" style="text-align: center;">
+            <p id="amount-msg" style="color:green;">Transaction Successful!!</p>
+        </div>
+    </div>
+
+</section>
+
+<script>
+
+    // Logic for back button
+    $(document).ready(function () {
+        $("#back-button").on("click", function () {
+            console.log("Pressed back button")
+            window.location = "{% url 'moveease_customer:payment_page' %}" // Back to payment page
+        })
+    })
+
+    //Logic for Paying
+    $(document).ready(function () {
+        $("#amount-msg").hide();
+        $("#pay-button").click(function () {
+            let total_amount = $("#pay-button").attr("data-amount");
+            let msg = "Press OK to pay Rs." + total_amount;
+            if (confirm(msg)) {
+                console.log("Paid");
+                $("#pay-button").fadeOut(1000);
+                $("#back-button").hide()
+                $("#amount-msg").fadeIn(1000);
+                $("#amount-msg").delay(3000).fadeOut("slow");
+                let my_data = { payment_mode: "UPI" };
+                $.ajax({
+                    url: "{% url 'moveease_customer:payment_update' %}",
+                    type: "POST",
+                    data: my_data,
+                    success: function (value) {
+                        if (value.status == 1) {
+                            alert("Your Transaction is Successful!!");
+                            alert("Success!! Your Order is Confirmed!!!");
+                            window.location = "{% url 'moveease_customer:home' %}";
+                        } else {
+                            alert("Your Transaction is Denied!!");
+                            console.log("Error while updating payment mode(UPI) in database")
+                        }
+                    }
+                })
+
+            } else {
+                console.log("not paid");
+            }
+        })
+    })
+</script>
+{% endblock %}

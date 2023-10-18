@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+    <title>{% block title %}Delivery Partner | Login{% endblock %}</title>
+
+    <!-- Bootstrap CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Bootstrap CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <!-- JQuery and AJAX CDN -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Font Awesome Icon(fa icon) CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Custom CSS File -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Custom JS File -->
+    <script src="{% static 'js/script.js' %}"></script>
+
+</head>
+
+<body style="background: linear-gradient(to right, #bdc3c7, #2c3e50);">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark text-white">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fa fa-map-marker" aria-hidden="true"
+                    style="font-size:30px;margin-left:5%;"> MoveEase</i></a>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-left:35%;">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin-left:30%; font-weight:bold;">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'moveease_customer:home' %}">For
+                            Customer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'moveease_admin:admin_login' %}">For
+                            Admin</a>
+                    </li>
+                </ul>
+
+                <a class="nav-link active" href="{% url 'moveease_dp:dp_login' %}" style="margin-right:3%;"><i
+                        class="fa fa-sign-in" aria-hidden="true"> Sign In</i></a>
+                <a class="nav-link active" href="{% url 'moveease_dp:dp_registration' %}" style="margin-right:2%;"><i
+                        class="fa fa-user-plus" aria-hidden="true"> Register</i></a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="customer-login" style="text-align:center;margin-top:10%">
+        <div class="container" style="width:25%;border:solid 1px white; border-radius:20px;box-shadow:3px 3px 15px white;">
+            <form method="post">
+                {% csrf_token %}
+                <h4>DELIVERY PARTNER LOGIN</h4>
+                <hr>
+
+                <input type="text" style="text-align:center" class="form-control" id="username" name="username" placeholder="Username" required><br>
+
+                <div class="mb-3">
+                    <p id="message"  style="color:red;font-weight: bold;"></p>
+                </div>
+
+                <input type="password" style="text-align:center" class="form-control" id="password" name="password" placeholder="password" required>
+
+                <button type="submit" style="margin-top:20px" class="btn btn-warning btn-md" style="font-size:larger">Log in</button><br>
+                <!--------->
+                <br>
+                <label style="font-size:large;">Forgot Password ?<a href="#" style="color:white;text-decoration: none;" id="forgot-password"><em>Click here</em></a></label>
+                <!--------->
+                <hr>
+
+                <label style="font-size:larger;margin-bottom:20px">New User ?<a href="{% url 'moveease_dp:dp_registration' %}" style="color:white;text-decoration: none;"><em>Register Here</em></a></label>
+
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li {% if message.tags %} class="{{message.tags}}" {% endif %}>{{message}}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+            </form>
+        </div>
+    </section>
+
+    <style>
+
+        li {
+            list-style-type: None;
+        }
+
+        .messages {
+            color: red;
+            font-weight:bold ;
+        }
+
+        .success {
+            color: green;
+            font-weight:bold ;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            $("#password").click(function () {
+                let name = $("#username").val();
+                my_data = { user_name: name, };
+                $.ajax({
+                    url: "{% url 'moveease_dp:username_checking' %}",
+                    method: "POST",
+                    data: my_data,
+                    success: function (values) {
+                        if (values.status == 1) {
+                            $("#message").hide()
+                        } else {
+                            $("#message").html("Invalid Username")
+                            $("#message").show()
+                        }
+                    }
+                })
+            })
+        })
+
+
+        // Logic for Password Reset 
+        $(document).ready(function () {
+            $('#forgot-password').click(function () {
+                let user_name = prompt("Enter your username");
+                if (user_name != "" && user_name != null) {
+                    let my_data = { name: user_name, user_type: "DELIVERY PARTNER" };
+                    $.ajax({
+                        url: "{% url 'moveease_customer:password_reset' %}",
+                        method: "POST",
+                        data: my_data,
+                        success: function (value) {
+                            if (value.status == 1) {
+                                let i = 0;
+                                while (i < 3) {
+                                    let remaining = 3 - i;
+                                    let msg = "Enter the otp that sent to your registered email id.\nAttempts Remaining: " + remaining;
+                                    let otp = prompt(msg);
+                                    if (otp != "" && otp != null) {
+                                        if (value.otp == otp) {
+                                            i=4;
+                                            k = 0;
+                                            while (k < 3) {
+                                                // Password reset pocedure goes here
+                                                let password1 = prompt("Enter your new password");
+                                                let password2 = prompt("Re enter your password");
+                                                if (password1 != "" && password2 != "" && password1 != null && password2 != null) {
+
+                                                    if (password1 == password2) {
+                                                        my_password = { password: password1, name: user_name };
+                                                        $.ajax({
+                                                            url: "{% url 'moveease_customer:password_reset2' %}",
+                                                            async: false, // if we don't use `async:false` this ajax call will run after the full iteration completes even the ajax call inside the loop(iteration) 
+                                                            method: "POST",
+                                                            data: my_password,
+                                                            success: function (values) {
+                                                                if (values.status == 1) {
+                                                                    alert("Password changed successfully!!!");
+                                                                    k = 4;
+                                                                } else if (values.status == 2){
+                                                                    console.log("Error while sending otp to mail for password reset");
+                                                                    console.log(values.otp);
+                                                                } else{
+                                                                    alert("Password must with a combination of uppercase letters, lowercase letters, numbers, and symbols.");
+                                                                }
+                                                            }
+                                                        })
+                                                    } else {
+                                                        alert("Password doesn't match");
+                                                    }
+                                                } else {
+                                                    k = 4;
+                                                }
+                                            }
+                                        } else {
+                                            alert(" Invalid OTP");
+                                            i++
+                                        }
+                                    } else {
+                                        i = 4
+                                    }
+                                }
+                            } else {
+                                alert("You're not a registered customer.Please Register");
+                            }
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

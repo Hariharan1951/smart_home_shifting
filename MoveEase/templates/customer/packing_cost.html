@@ -1,0 +1,326 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+MoveEase | Packing Section
+{% endblock %}
+{% block body %}
+{% include 'customer/customer_navbar.html' %}
+{% include 'slider.html' %}
+
+<section class="packing-cost-section">
+    <div class="container"
+        style="border:2px solid black; border-radius:15px; margin-top:10px; margin-bottom:10px;width:50%; box-shadow: 10px 10px 5px black">
+        <div class="price-section"
+            style="background-image:url({% static 'images/background/base_price.jpg'%}); background-size:100%;margin-top:10px; margin-bottom:10px;border:solid 1px black;padding:10px">
+            
+            <div class="row" style="font-size: large;">
+                <div class="col-md-9">
+                    <p>Vehicle Cost</p>
+                </div>
+                <div class="col-md-3" style="text-align:right">
+                    <p id="base_price"
+                    data-value="{{base_price}}"><i class="fa fa-inr" aria-hidden="true"> {{customer_info.vehicle_price}}</i>
+                    </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <p>BHK Charge(from loaction)</p>
+                </div>
+                <div class="col-md-3" style="text-align:right">
+                    <p id="base_price"
+                        data-value="{{base_price}}"><i class="fa fa-inr" aria-hidden="true">
+                    {{customer_info.add1_house_rate}}</i></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <p>BHK Charge(to loaction)</p>
+                </div>
+                <div class="col-md-3" style="text-align:right">
+                    <p id="base_price"
+                data-value="{{base_price}}"><i class="fa fa-inr" aria-hidden="true">
+                    {{customer_info.add2_house_rate}}</i></p>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-9">
+                    <p>Floor Charge(from location)</p>
+                </div>
+                <div class="col-md-3" style="text-align:right">
+                    <p id="base_price"
+                data-value="{{base_price}}"><i class="fa fa-inr" aria-hidden="true"> {{customer_info.add1_floor}}</i>
+            </p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-9">
+                    <p>Floor Charge(to location)</p>
+                </div>
+                <div class="col-md-3" style="text-align:right">
+                    <p id="base_price"
+                data-value="{{base_price}}"><i class="fa fa-inr" aria-hidden="true"> {{customer_info.add2_floor}}</i>
+                    </p>
+                </div>
+            </div>
+
+
+            <section
+                style="background-color:white;border:solid 1px violet;border-radius:10px;box-shadow:5px 5px rgb(243, 146, 243);padding:5px;">
+                <div class="row">
+                    <div class="col-md-9">
+                        <p><strong><em>Base Price</em></strong></p>
+                    </div>
+                    <div class="col-md-3" style="text-align:right">
+                        <p id="base_price" data-value="{{base_price}}"><i class="fa fa-inr" aria-hidden="true"> <strong>{{base_price}}</strong></i></p>
+                    </div>
+                </div>
+            </section>
+
+
+            
+            <hr>
+            <p><i style="color:green" class="fa fa-check" aria-hidden="true"></i> <i>Transport item safely with a
+                    dedicated vehicle</i></p>
+            <p><i style="color:green" class="fa fa-check" aria-hidden="true"></i> <i>check-circleLoading and unloading
+                    of goods</i></p>
+            <p><i style="color:green" class="fa fa-check" aria-hidden="true"></i> <i>check-circleFriendly and
+                    professional movers</i></p>
+        </div>
+        <h3>Customize your experience</h3>
+        <div class="customize-section" style="border:solid 1px black; padding:10px;margin-bottom:10px">
+            <div class="row">
+                <div class="col-sm-10">
+                    <p style="margin-top:-5px">Single-layer packing</p>
+                    <p><strong><i class="fa fa-inr" aria-hidden="true"></i> 349</strong></p>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" style="margin-top:20px" id="slpa" data-value="349"
+                        name="slpa">Add</button>
+                    <button class="btn btn-danger" style="margin-top:20px" id="slpd" data-value="349"
+                        name="slpd">Remove</button>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-10">
+                    <p style="margin-top:-5px">Multiple-layer packing</p>
+                    <p><strong><i class="fa fa-inr" aria-hidden="true"></i> 799</strong></p>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" style="margin-top:20px" id="mlpa" data-value="799"
+                        name="mlpa">Add</button>
+                    <button class="btn btn-danger" style="margin-top:20px" id="mlpd" data-value="799"
+                        name="mlpd">Remove</button>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-10">
+                    <p style="margin-top:-5px">Unpacking and arrangement of big items</p>
+                    <p><strong><i class="fa fa-inr" aria-hidden="true"></i> 349</strong></p>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" style="margin-top:20px" id="uabia" data-value="349">Add</button>
+                    <button class="btn btn-danger" style="margin-top:20px" id="uabid" data-value="349">Remove</button>
+
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-10">
+                    <p style="margin-top:-5px">Dismantling and reassembly of basic furniture</p>
+                    <p><strong><i class="fa fa-inr" aria-hidden="true"></i> 349</strong></p>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-primary" style="margin-top:20px" id="drpfa" data-value="349">Add</button>
+                    <button class="btn btn-danger" style="margin-top:20px" id="drpfd" data-value="349">Remove</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="total-cost" style="margin-top:10px; margin-bottom:10px;border:solid 1px black;padding:10px">
+
+            <div class="row" style="font-size: large;">
+                <div class="col-md-9">
+                    <p><em>Total Cost</em></p>
+                </div>
+                <div class="col-md-3" style="text-align:right">
+                    <p id="total-cost" name="total-cost"><i
+                        class="fa fa-inr" aria-hidden="true"> <strong>{{base_price}}</strong></i></p>                
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mb-3">
+            <input type="submit" class="btn btn-warning btn-lg" style="font-size:large;margin-left:40%"
+                id="review_booking" value="Review Booking">
+        </div>
+    </div>
+</section>
+
+<style>
+    li {
+        list-style-type: None;
+    }
+
+    .messages {
+        color: red;
+    }
+</style>
+
+<script>
+
+    $("#slpd").hide()
+    $("#mlpd").hide()
+    $("#uabid").hide()
+    $("#drpfd").hide()
+
+    $(document).ready(function () {
+        let output = ""
+        let slpa = 0
+        let mlpa = 0
+        let uabia = 0
+        let drpfa = 0
+        let base_price = Number($("#base_price").attr("data-value"))
+        let result = base_price
+        $("#slpa").on("click", function () {
+            let added_amount = Number($("#slpa").attr("data-value"))
+            slpa = added_amount
+            mlpa = 0
+            result = slpa + mlpa + uabia + drpfa + base_price
+            output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + result + '</strong></i>'
+            $("#slpd").show()
+            $("#slpa").hide()
+            $("#mlpa").show()
+            $("#mlpd").hide()
+            $("#total-cost").html(output)
+            $("#total-cost").fadeOut()
+            $("#total-cost").fadeIn()
+        })
+
+        $("#slpd").on("click", function () {
+            slpa = 0
+            result = slpa + mlpa + uabia + drpfa + base_price
+            output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + result + '</strong></i>'
+            $("#slpd").hide()
+            $("#slpa").show()
+            $("#total-cost").html(output)
+            $("#total-cost").fadeOut()
+            $("#total-cost").fadeIn()
+        })
+
+        $("#mlpa").on("click", function () {
+            let added_amount = Number($("#mlpa").attr("data-value"))
+            mlpa = added_amount
+            slpa = 0
+            result = slpa + mlpa + uabia + drpfa + base_price
+            output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + result + '</strong></i>'
+            $("#slpa").show()
+            $("#mlpd").show()
+            $("#mlpa").hide()
+            $("#slpd").hide()
+            $("#total-cost").html(output)
+            $("#total-cost").fadeOut()
+            $("#total-cost").fadeIn()
+
+        })
+
+        $("#mlpd").on("click", function () {
+            mlpa = 0
+            result = slpa + mlpa + uabia + drpfa + base_price
+            output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + result + '</strong></i>'
+            $("#mlpd").hide()
+            $("#mlpa").show()
+            $("#total-cost").html(output)
+            $("#total-cost").fadeOut()
+            $("#total-cost").fadeIn()
+        })
+
+        $("#uabia").on("click", function () {
+            let added_amount = Number($("#uabia").attr("data-value"))
+            uabia = added_amount
+            result = slpa + mlpa + uabia + drpfa + base_price
+            output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + result + '</strong></i>'
+            $("#uabid").show()
+            $("#uabia").hide()
+            $("#total-cost").html(output)
+            $("#total-cost").fadeOut()
+            $("#total-cost").fadeIn()
+
+        })
+
+        $("#uabid").on("click", function () {
+            uabia = 0
+            result = slpa + mlpa + uabia + drpfa + base_price
+            output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + result + '</strong></i>'
+            $("#uabia").show()
+            $("#uabid").hide()
+            $("#total-cost").html(output)
+            $("#total-cost").fadeOut()
+            $("#total-cost").fadeIn()
+        })
+
+        $("#drpfa").on("click", function () {
+            let added_amount = Number($("#drpfa").attr("data-value"))
+            drpfa = added_amount
+            result = slpa + mlpa + uabia + drpfa + base_price
+            output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + result + '</strong></i>'
+            $("#drpfd").show()
+            $("#drpfa").hide()
+            $("#total-cost").html(output)
+            $("#total-cost").fadeOut()
+            $("#total-cost").fadeIn()
+
+        })
+
+        $("#drpfd").on("click", function () {
+            drpfa = 0
+            result = slpa + mlpa + uabia + drpfa + base_price
+            output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + result + '</strong></i>'
+            $("#drpfa").show()
+            $("#drpfd").hide()
+            $("#total-cost").html(output)
+            $("#total-cost").fadeOut()
+            $("#total-cost").fadeIn()
+        })
+
+        $("#review_booking").on("click", function () {
+            // Booking amount calculation (but used for cancellation fee when customer cancel order after order confirmation) 
+            let booking_amount = 0
+            if (0 < result && result <= 100) {
+                booking_amount = Math.round((30 / 100) * result);
+            } else if (100 < result && result <= 500) {
+                booking_amount = 100;
+            } else {
+                booking_amount = 500;
+            }
+            my_data = {
+                total_amount: result,
+                booking_amount: booking_amount,
+            };
+            $.ajax({
+                url: "{% url 'moveease_customer:packing_section2' %}",
+                method: "POST",
+                data: my_data,
+                success: function (value) {
+                    if (value.status == 1) {
+                        window.location = "{% url 'moveease_customer:booking_confirmation' %}"; // This line is to load the url after the ajax call
+                    }
+                }
+            })
+        })
+    })
+
+
+</script>
+
+{% endblock %}
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends 'base.html'%}
+{% block title %}
+MoveEase | Delivery-Order History
+{% endblock %}
+{% block body %}
+{% include 'deliveryAdmin/delivery_navbar.html' %}
+
+<section class="admin-order-history" style="margin-top:50px;margin-bottom:50px; font-size:small;">
+    <div class="live-order-header"
+        style="border:solid 1px #874949;color:rgb(208, 48, 77);background-color:yellowgreen;font-family:serif ; margin:10px 110px 3px 110px; border-radius:100px 100px 100px 100px">
+        <h4 style="text-align: center;">Order History</h4>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row sorting-button" style="margin:2px 110px 2px 110px;">
+            <div class="col-md-3">
+                <button type="submit" style="margin-left:15px;" class="btn btn-outline-primary btn-sm"
+                    name="sort-button" value="Sort By Name">Sort by Name</button>
+            </div>
+
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-outline-primary btn-sm" name="sort-button"
+                    value="Sort By Date">Sort by Date</button>
+            </div>
+
+
+
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-outline-primary btn-sm" name="sort-button"
+                    value="Sort By Order Id">Sort by Order Received</button>
+            </div>
+
+
+            <div class="col-md-3" style="margin-left:-10px;padding-left:0px">
+                <div class="row" style="padding-left:0px">
+                    <div class="col-md-9" style="margin-right:0px;padding-right:0px;">
+                        <input type="date" class="form-control" style="font-size:small;border-color:rgb(111, 205, 237)"
+                            min="0" name="date" id="date" placeholder="Date">
+                    </div>
+                    <div class="col-md-3" style="margin-left:0px;padding-left:0px;">
+                        <button type="submit" class="btn btn-outline-primary btn-sm" name="sort-button"
+                            value="Search">Search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <div class="container"
+        style="border: 1px solid lightgoldenrodyellow;box-shadow: 5px 5px 10px #874949;border-radius:0px 0px 10px 10px;border-top: none">
+        {% if ordered_history %}
+        <table class="table" style="text-align:center;">
+            <thead>
+                <th>S.No</th>
+                <th>Name</th>
+                <th>From Address</th>
+                <th>To Address</th>
+                <th>Shifting Date</th>
+                <th>Item Nos</th>
+                <th>Status</th>
+                <th>Review</th>
+            </thead>
+
+            <tbody>
+                {% for i in ordered_history %}
+                <tr class="{{i.id}}">
+                    <td>{{forloop.counter }}</td>
+                    <!--{{forloop.counter}} used for getting s.no,  if we want from `0` we use {{forloop.counter0}}-->
+                    <td>{{i.customer_name}}</td>
+                    <td>{{i.fromAddress}}</td>
+                    <td>{{i.toAddress}}</td>
+                    <td>{{i.shifting_date}}</td>
+                    <td>{{i.no_of_items}}</td>
+                    <td>{{i.status}}</td>
+                    <td>
+                        <button class="btn btn-outline-warning rating-review" style="color:black" type="button"
+                            data-rating="{{i.customer_rating}}" data-status="{{i.status}}"
+                            data-review="{{i.customer_review}}" data-ord-id={{i.id}}
+                            data-counter="{{forloop.counter}}"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td colspan="8">
+                        <div class="cus-review" id="{{i.id}}"
+                            style="border:solid 1px orange; box-shadow:5px 5px 10px orangered;margin-bottom:10px;">
+
+                            <div class="row" style="margin-top:10px;text-align: center;">
+                                <p><strong>Rating & Feedback for S.no({{forloop.counter}})</strong></p>
+                                <hr style="width:250px;margin-top:-15px;margin-left:450px">
+                            </div>
+                            <div class="row" style="margin-top:10px;margin-bottom:10px;text-align:center;">
+                                <div class="col-md-6">
+                                    <div style="text-align: center;">
+                                        <strong><label for="customer-rating-{{i.id}}"
+                                                class="form-label"><u>RATING</u></label></strong>
+                                    </div>
+                                    {% if i.customer_rating != None %}
+                                    <input type="range" style="width:450px;" class="range" min="1" max="5" disabled
+                                        value={{i.customer_rating}} id="customer-rating-{{i.id}}">
+                                    <div class="row" style="margin-top:-8px;padding-top:0px">
+                                        <div class="col-sm-2" style="margin-left:19px;">
+                                            <h6 style="color:red">Poor</h6>
+                                        </div>
+                                        <div class="col-sm-2" style="margin-left:13px;">
+                                            <h6 style="color:orange">Fair</h6>
+                                        </div>
+                                        <div class="col-sm-2" style="margin-left:16px;">
+                                            <h6 style="color:rgb(219, 219, 7)">Average</h6>
+                                        </div>
+                                        <div class="col-sm-2" style="margin-left:12px;">
+                                            <h6 style="color:rgb(83, 253, 83)">Good</h6>
+                                        </div>
+                                        <div class="col-sm-2" style="margin-left:15px;">
+                                            <h6 style="color:rgb(1, 196, 1)">Excellent</h6>
+                                        </div>
+                                    </div>
+
+                                    {% else %}
+                                    <p style="color:red;text-align: center;"> Rating not given by customer</p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div style="text-align: center;">
+                                        <strong><label for="customer-review-{{i.id}}"
+                                                class="form-label"><u>FEEDBACK</u></label></strong>
+                                    </div>
+                                    {% if i.customer_rating == None %}
+                                    <p style="color:red;text-align: center;"> Feedback not given by customer</p>
+                                    {% else %}
+                                    <textarea class="form-control-plaintext" id="customer-review-{{i.id}}"
+                                        disabled>{{i.customer_review}}</textarea>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+                            <div class="row" style="margin-bottom:10px">
+                                <div style="text-align: center;">
+                                    <button type="submit" class="btn btn-success" id="cus-review-submit"
+                                        data-ord-id={{i.id}} data-counter="{{forloop.counter}}">Close</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <h6 style="text-align: center;">No orders done yet..</h6>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+
+    // Logic for view rating view button
+    $(document).ready(function () {
+        $(".cus-review").hide()
+        $(this).on("click", ".rating-review", function () {
+            let order_id = $(this).attr("data-ord-id");
+            let count = $(this).attr("data-counter");
+            let status = $(this).attr("data-status");
+            if (status == "REJECTED" || status == "COMPLETED") {
+                new_value = "#" + order_id;
+                $(new_value).slideToggle(500);
+            } else {
+                alert("You can give rating and review after the order is rejected or completed..")
+            }
+        })
+    })
+
+
+    // Logic for close button
+    $(document).ready(function () {
+        $(this).on("click", "#cus-review-submit", function () {
+            let order = $(this).attr("data-ord-id")
+            new_value = "#" + order;
+            $(new_value).fadeOut(500);
+
+        })
+    })
+</script>
+{% endblock %}

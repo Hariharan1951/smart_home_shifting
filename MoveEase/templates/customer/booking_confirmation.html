@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% block title %}
+MoveEase | Booking Confirmation
+{% endblock %}
+{% block body %}
+    {% include 'customer/customer_navbar.html' %}
+    {% include 'slider.html' %}
+
+<section class="booking-section">
+    <div class="container" style="border:2px solid black; border-radius:15px; margin-top:10px; margin-bottom:10px;width:50%; box-shadow: 10px 10px 5px black">
+        <div class="time-section" style="margin-top:10px;margin-bottom:10px;border:solid 1px black;padding:10px">
+            <label for="time-slot" class="mr-sm-2"><strong><em>Select pick-up time slot</em></strong></label>
+            <select class="form-select" id="time-slot" name="time-slot" required>
+                <option value="08:00" {% if pickup == "08:00" %} selected {% endif %}>6:00 AM - 8:00 AM</option>
+                <option value="10:00" {% if pickup == "01:00" %} selected {% endif %}>8:00 AM - 10:00 AM</option>
+                <option value="12:00" {% if pickup == "12:00" %} selected {% endif %}>10:00 AM - 12:00 PM</option>
+                <option value="14:00" {% if pickup == "14:00" %} selected {% endif %}>12:00 PM - 02:00 PM</option>
+                <option value="16:00" {% if pickup == "16:00" %} selected {% endif %}>02:00 PM - 04:00 PM</option>
+                <option value="18:00" {% if pickup == "18:00" %} selected {% endif %}>04:00 PM - 06:00 PM</option>
+                <option value="20:00" {% if pickup == "20:00" %} selected {% endif %}>06:00 PM - 08:00 PM</option>
+                <option value="22:00" {% if pickup == "22:00" %} selected {% endif %}>08:00 PM - 10:00 PM</option>
+            </select>     
+            
+            
+                <div class="mb-3" style="color:red;text-align: center;">
+                    <p id="time_error" ></p>
+                </div>
+            
+        </div>
+        <p id="cus-shiftdate" data-value="{{customer_info.shifting_date}}" hidden></p>
+
+        {% if request.user.is_authenticated %}
+        <div class="coupon-section" style="margin-top:40px;margin-bottom:10px;padding:10px;border:solid 1px black;text-align:center">
+            <div class="container">
+                <label for="coupon-code" class="col-sm-2 col-form-label"><strong><em>Coupon Code</em></strong></label>
+                <input type="text" class="form-control" style="width:70%;margin-left:20px;display:inline-block;" id="coupon-code" name="coupon-code" placeholder="Enter coupon code">
+                
+                    <div class="mb-3" style="color:green;text-align:center">
+                        <p id="coupon-success-msg" ></p>
+                    </div>
+                
+                    <div class="mb-3" style="color:red;text-align:center">
+                        <p id="coupon-error-msg"></p>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-md-6" style="text-align:center">
+                            <button type="submit" id="apply_coupon" name="apply_coupon" style="margin-top:20px;" data-total-amount="{{customer_info.total_amount}}" class="btn btn-outline-success">Apply</button>
+                        </div>
+                        <div class="col-md-6" style="text-align:center">
+                            <button type="submit" id="clear_coupon" name="clear_coupon" style="margin-top:20px;" data-total-amount="{{customer_info.total_amount}}" class="btn btn-outline-danger">Clear</button>
+                        </div>
+                    </div>
+            </div>
+
+
+            <button type="button" style="background-color:rgb(244, 161, 244);border:solid 1px rgb(244, 161, 244); margin-top:10px;" class="btn btn-warning" id="avaialabe-coupon-button">Available Coupons</button>
+
+            <div class="available-coupon" style="margin-top:5px;border:solid 1px rgb(244, 161, 244);border-radius:10px;">
+                {% if coupon_list %} 
+                    {% for i in coupon_list %}
+                        <div class="row" >
+                            <div class="col-md-8" style="padding-top:5px;padding-bottom:5px;padding-left:50px">
+                                <p style="font-weight:bold">{{i.name}}</p>
+                            </div>
+                            <div class="col-md-4" style="padding-left:50px">
+                                <button style="font-size:12px;" id="use-button" type="button" data-id={{i.id}} data-name="{{i.name}}" class="btn btn-light"><strong>USE</strong></button>
+                            </div>
+                        </div>
+                        <hr style="margin-top:-10px" >
+                    {% endfor %}
+                    <button type="button" style="margin-bottom:10px" class="btn btn-outline-danger" id="back-coupon-button">Back</button>
+                {% else %}
+                    <p style="font-weight:bold;color:red;">Sorry!! No Coupon Available</p>
+                    <button type="button" style="margin-bottom:10px" class="btn btn-outline-danger" id="back-coupon-button">Back</button>
+                {% endif %}
+            </div>
+                
+        {% endif %}
+
+        <div class="order-summary" style="margin-top:40px;margin-bottom:10px;padding:10px;border:solid 1px black;">
+            <div class="container">
+                <h4>Order Summary</h4>
+                <hr>
+                <div class="row">
+                    <div class="col-md-9">
+                        <p style="font-size:large;"><em>Amount Quoted</em></p>
+                    </div>
+                    <div class="col-md-3" style="text-align: center;">
+                        <p id="final_amount" style="margin-left: 10px;" data-value="{{final_amount}}"><i class="fa fa-inr" aria-hidden="true"> <strong>{{customer_info.total_amount}}</strong></i> </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-9">
+                        <p style="font-size:large;"><em>Shifting Date</em></p>
+                    </div>
+                    <div class="col-md-3" style="text-align: center;">
+                        <p id="cus-shiftdate" data-value="{{customer_info.shifting_date}}"><strong>{{customer_info.shifting_date}}</strong></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-9">
+                        <p style="font-size:large;"><em>No.of items added</em></p>
+                    </div>
+                    <div class="col-md-3" style="text-align: center;">
+                        <p id="cus-shiftdate" data-value="{{customer_info.cus_selected_count}}"><strong>{{customer_info.cus_selected_count}}</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="row">
+                <div class="col-sm-9">
+                    <p style="font-size:large;"><strong><em>Total Amount</em></strong></p>
+                    <p style="font-size: small;">Cancellation charges of Rs.{{customer_info.booking_amount}} will be deducted from your refund amount, if you cancel after order confirmation.</p>
+                </div>
+                <div class="col-md-3" style="text-align: center;">
+                    <p id="booking_amount" style="margin-left: 10px;" ><i class="fa fa-inr" aria-hidden="true"> <strong>{{customer_info.total_amount}}</strong></i></p>
+                </div>
+            </div>
+        </div>
+
+            <div class="form-group row" style="margin:5% 0% 1% 0%">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-8" style="padding-right:0%">
+                            {% if request.user.is_authenticated %}
+                                <input type="email" class="form-control" id="mail" name="mail" value="{{user.email}}" placeholder="Enter your mail id">
+                            {% else %}
+                                <input type="email" class="form-control" id="mail" name="mail" placeholder="Enter your mail id">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4" style="padding-left:0%">
+                            <button type="submit" id="quote-button" class="btn btn-outline-primary"><i class="fa fa-envelope-o" aria-hidden="true"> Get Quote</i></button>
+                        </div>
+                    </div>
+
+                    
+                        <div class="mb-3" style="text-align:center">
+                            <p id="mail-msg" style="color:green;"></p>
+                        </div>
+                    
+                    
+                        <div class="mb-3" style="text-align:center">
+                            <p id="mail-error-msg" style="color:red;"></p>
+                        </div>
+                    
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" id="confirm-button" class="btn btn-success">Confirm Booking</button>
+                </div>
+            </div>
+    </div>
+
+    
+    
+</section>
+
+<style>
+
+    li{list-style-type: None;}
+
+    .messages{
+    color:red;
+    }
+
+</style>
+
+<script>
+
+    $(document).ready(function(){
+        $("#confirm-button").click(function(e){
+            let datetime = $("#cus-shiftdate").attr("data-value") + "T" + $("#time-slot").val()
+            let cus_shifting_dateTime = new Date(datetime)
+            let currentTime = new Date(); // To get the current date and time
+            let current_time_difference = cus_shifting_dateTime - currentTime;
+
+            if (current_time_difference > 7200000){ // 7200000 is millisecond conversion of 2 hours
+                console.log("Checking")
+                $("#time_error").hide()
+                let my_data = {pickup_time:$("#time-slot").val()};
+                $.ajax({
+                    url:"{% url 'moveease_customer:getTime' %}",
+                    method: "POST",
+                    data:my_data,
+                    success: function(value){
+                        if (value.status == 1){
+                        window.location = "{% url 'moveease_customer:payment_page' %}"
+                        }
+                    }
+                })
+                
+            }else{
+                e.preventDefault()
+                $("#time_error").html("Invalid Time for your choosen date")
+                $("#time_error").show()
+            }
+        })
+    })
+
+
+ 
+    $(document).ready(function(){
+        $("#quote-button").click(function(){
+            let mail_id = $("#mail").val()
+            my_data = {mail_id:mail_id}
+            $.ajax({
+                url: "{% url 'moveease_customer:email' %}",
+                method: "POST",
+                data: my_data,
+                success: function(value){
+                    if (value.status == 1){
+                        $("#mail-msg").html("Mail sent successfully");
+                        $("#mail-msg").show();
+                        $("#mail-error-msg").hide();
+                    }else{
+                        $("#mail-error-msg").html("Invalid Email Id");
+                        $("#mail-error-msg").show();
+                        $("#mail-msg").hide();
+                    }}
+        })
+    })
+});
+
+
+    //Logic for coupon code(apply button)
+    $(document).ready(function(){
+        $(this).on("click","#apply_coupon",function(){
+            console.log("Clicked apply button");
+            let coupon_code = $("#coupon-code").val();
+            let total_amount = $(this).attr("data-total-amount");
+            let my_data = {coupon_code:coupon_code, total_amount:total_amount};
+            $.ajax({
+                url: "{% url 'moveease_customer:coupon_code' %}",
+                method: "POST",
+                data: my_data,
+                success: function(value){
+                    let output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + value.discounted_total_price + '</strong></i>';
+                    if (value.status == 1){
+                        console.log("code applied")
+                        let msg = "Code applied successfully.<br> Your get a discount of Rs." + value.discount_amount;
+                        /////////////////////////////////////
+                        $("#coupon-success-msg").html(msg);
+                        $("#coupon-success-msg").show();
+                        $("#coupon-error-msg").hide(); 
+                    }else if (value.status == 2){
+                        $("#coupon-success-msg").hide();
+                        $("#coupon-error-msg").html(value.description);
+                        $("#coupon-error-msg").show();
+                    }else if (value.status == 3){
+                        console.log("Coupon Code Expired!!");
+                        $("#coupon-success-msg").hide();
+                        $("#coupon-error-msg").html("Coupon Code Expired!!");
+                        $("#coupon-error-msg").show();
+                    }else{
+                        console.log("Invalid Coupon Code");
+                        $("#coupon-success-msg").hide();
+                        $("#coupon-error-msg").html("Invalid Coupon Code!!");
+                        $("#coupon-error-msg").show();
+                    }
+                    $("#booking_amount").html(output);
+                    $("#booking_amount").fadeOut();
+                    $("#booking_amount").fadeIn();
+                }
+            })
+        })
+    })
+
+
+    //Logic for coupon code(clear button)
+    $(document).ready(function(){
+        $(this).on("click","#clear_coupon",function(){
+            console.log("Clicked apply button");
+            let total_amount = $(this).attr("data-total-amount");
+            let my_data = {total_amount:total_amount};
+            $.ajax({
+                url: "{% url 'moveease_customer:clear_coupon' %}",
+                method:"POST",
+                data: my_data,
+                success:function(value){
+                    let output = '<i class="fa fa-inr" aria-hidden="true"> <strong>' + value.discounted_total_price + '</strong></i>';
+                    if (value.status == 1){
+                        console.log("Clear")
+                        $("#coupon-code").val(''); // code to clear the input box
+                        $("#booking_amount").html(output);
+                        $("#booking_amount").fadeOut();
+                        $("#booking_amount").fadeIn();
+                        $("#coupon-success-msg").hide();
+                        $("#coupon-error-msg").hide();
+                    }else{
+                        console.log("Error while clearing coupon code")
+                    }
+                }
+            });
+    })
+    })
+    
+
+    // Logic for available button
+    $(document).ready(function(){
+        $(".available-coupon").hide()
+        $(this).on("click", "#avaialabe-coupon-button", function(){
+            $(".available-coupon").slideDown(1000)
+            $("#avaialabe-coupon-button").fadeOut(500)
+        })
+    })
+
+    // Logic for Use Button in available coupon
+    $(document).ready(function(){
+        $(this).on("click", "#use-button", function(){
+            let coupon_code_name = $(this).attr("data-name")
+            $("#coupon-code").val(coupon_code_name)
+        })
+    })
+
+    
+    //Logic for Back button in available coupon
+    $(document).ready(function(){
+        $(this).on("click", "#back-coupon-button", function(){
+            $("#avaialabe-coupon-button").fadeIn(1000)
+            $(".available-coupon").slideUp(1000)
+        })
+    })
+
+</script>
+
+{% endblock %}
+{% block footer %}
+    {% include 'footer.html' %}
+{% endblock %}

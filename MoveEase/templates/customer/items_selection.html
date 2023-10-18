@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+MoveEase | Home
+{% endblock %}
+{% block body %}
+{% include 'customer/customer_navbar.html' %}
+{% include 'slider.html' %}
+
+<section class="item-selection" style="background-image:url('{% static "images/background/item_selection.jpg" %}');">
+    <div class="container" style="border:solid 1px black; border-radius:5px;width:50%; margin-top:10px; margin-bottom:10px;background-color: white;">
+        <div class="row" style="text-align:center">
+            <h5>Items Selection</h5>
+            <div class="col-sm-6 ">
+                <h5>From</h5>
+                <h6>{{address1}}</h6>
+            </div>
+            <div class="col-sm-6">
+                <h5>To</h5>
+                <h6>{{address2}}</h6>
+            </div>
+        </div>
+        <table class="table table-striped" id="items-table">
+            <thead>
+                <th style="padding-left:30px;">Items</th>
+                <th style="text-align: center;">Count</th>
+            </thead>
+            {% for item in items %}
+            <tr>
+                <td>{{item.item_name}}</td>
+                <td>
+                    <select class="form-select" id="{{item.id}}" name="items-selection" required>
+                        <!--Created its primary key as an id for getting all the values-->
+                        <option value="0" selected>0</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <input id="item-count" data-value="{{items_count}}" hidden>
+        <div class="mb-3">
+            <input type="submit" class="btn btn-warning btn-lg" style="font-size:large;margin-left:45%" id="proceed"
+                value="Proceed">
+        </div>
+        <div class="mb-3">
+            <p id="message" style="color:red;margin-left:45%"></p>
+        </div>
+    </div>
+</section>
+
+
+<script>
+
+    $(document).ready(function (e) {
+        $(this).on("click", "#proceed", function () {
+            let total_item_count = $("#item-count").attr("data-value");  // To find the no.of items in  database 
+            let i = 0;
+            let loop_count = 0;
+            let zero_count = 0; //To find the no of zeros and also if there is any one selection option to proceed
+            let cus_select_count = 0;
+            let my_data = {};
+            while (loop_count < total_item_count) {
+                my_this = "#" + i                 // Creating id using string formatting
+                let item_count = $(my_this).val()
+                if (item_count !== undefined) {  // If there is no id in that it returns undefined
+                    if (Number(item_count) === Number(0)) {
+                        zero_count += 1
+                    } else {
+                        cus_select_count += Number(item_count)
+                    }
+                    my_data[i] = item_count
+                    loop_count++
+                    i++
+                } else {
+                    i++
+                }
+            };
+            my_data["cus_select_count"] = cus_select_count;
+
+            if (Number(zero_count) === Number(total_item_count)) {
+                $("#message").html("No items selected")
+                $("#message").show()
+                e.preventDefault()
+
+            } else {
+                $("#message").hide()
+                $.ajax({
+                    url: "{% url 'moveease_customer:items_selected_by_cus' %}",
+                    type: "POST",
+                    data: my_data,
+                    success: function (value) {
+                        if (value.status == 1) {
+                            window.location = "{% url 'moveease_customer:packing_section' %}";// This line is to load the url after the ajax call
+                        }
+                    }
+                })
+            }
+
+        })
+    })
+</script>
+
+{% endblock %}
+{% block footer %}
+{% include 'footer.html' %}
+{% endblock %}
